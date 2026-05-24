@@ -1,8 +1,12 @@
+import { signInWithPopup } from "firebase/auth";
 import GoogleIcon from "../assets/icons/GoogleIcon"
+import { auth, googleProvider } from "../utils/firebase";
 
 const SignupPage = () => {
-  const handleContinueWithGoogle = () => {
 
+  const handleContinueWithGoogle = async () => {
+    const data = await signInWithPopup(auth, googleProvider);
+    console.log(data);
   };
 
   return (
