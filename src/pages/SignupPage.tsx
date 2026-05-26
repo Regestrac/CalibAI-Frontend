@@ -1,12 +1,24 @@
 import { signInWithPopup } from "firebase/auth";
 import GoogleIcon from "../assets/icons/GoogleIcon"
 import { auth, googleProvider } from "../utils/firebase";
+import api from "../utils/axios";
 
 const SignupPage = () => {
+  const handleLogin = async (token: string) => {
+    try {
+      const { data } = await api.post('/auth/login', { token });
+      console.log(data);
+    } catch (error) {
+      console.log(`Login error: ${error}`);
+    }
+  };
 
   const handleContinueWithGoogle = async () => {
     const data = await signInWithPopup(auth, googleProvider);
     console.log(data);
+
+    const token = await data?.user?.getIdToken();
+    handleLogin(token);
   };
 
   return (
