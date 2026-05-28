@@ -1,7 +1,16 @@
-import SignupPage from './pages/SignupPage'
+import { useEffect } from 'react';
+import Home from './pages/Home';
+import { getCurrentUser } from './services/getCurrentUser';
 
 const App = () => {
-  return <SignupPage />
-}
+  useEffect(() => {
+    const getUser = async () => {
+      await getCurrentUser()
+    }
+    getUser();
+  }, []);
 
-export default App
+  return <Home />
+};
+
+export default App;
