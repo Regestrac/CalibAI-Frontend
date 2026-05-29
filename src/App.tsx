@@ -1,21 +1,22 @@
 import { useEffect } from 'react';
 import Home from './pages/Home';
 import { getCurrentUser } from './services/getCurrentUser';
-import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { useAppDispatch } from './hooks/redux-hooks';
+import { setUserData } from './redux/userSlice';
 
 const App = () => {
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     const getUser = async () => {
-      await getCurrentUser()
+      const userData = await getCurrentUser();
+      dispatch(setUserData({ userData }));
     }
     getUser();
-  }, []);
+  }, [dispatch]);
 
   return (
-    <Provider store={store}>
-      <Home />
-    </Provider>
+    <Home />
   )
 };
 
