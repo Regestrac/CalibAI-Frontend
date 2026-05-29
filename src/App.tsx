@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import Home from './pages/Home';
 import { getCurrentUser } from './services/getCurrentUser';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 const App = () => {
   useEffect(() => {
@@ -10,7 +12,11 @@ const App = () => {
     getUser();
   }, []);
 
-  return <Home />
+  return (
+    <Provider store={store}>
+      <Home />
+    </Provider>
+  )
 };
 
 export default App;
