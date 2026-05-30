@@ -1,5 +1,5 @@
 import { signInWithPopup } from "firebase/auth";
-import GoogleIcon from "../assets/icons/GoogleIcon"
+import GoogleIcon from "../assets/icons/GoogleIcon";
 import { auth, googleProvider } from "../utils/firebase";
 import api from "../utils/axios";
 
@@ -41,7 +41,7 @@ const SignupPage = () => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignupPage
+export default SignupPage;

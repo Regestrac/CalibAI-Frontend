@@ -1,4 +1,4 @@
-import SignupPage from './SignupPage'
+import SignupPage from './SignupPage';
 
 const Home = () => {
   return (
@@ -7,7 +7,7 @@ const Home = () => {
         <SignupPage />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

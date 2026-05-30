@@ -11,13 +11,13 @@ const App = () => {
     const getUser = async () => {
       const userData = await getCurrentUser();
       dispatch(setUserData({ userData }));
-    }
+    };
     getUser();
   }, [dispatch]);
 
   return (
     <Home />
-  )
+  );
 };
 
 export default App;

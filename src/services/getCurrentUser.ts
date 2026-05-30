@@ -1,4 +1,4 @@
-import api from "../utils/axios"
+import api from "../utils/axios";
 
 export const getCurrentUser = async () => {
   try {
@@ -10,4 +10,4 @@ export const getCurrentUser = async () => {
 
     return null;
   }
-}
+};

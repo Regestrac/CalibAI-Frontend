@@ -15,10 +15,10 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserData: (state: InitialStateType, action: PayloadAction<InitialStateType>) => {
-      state.userData = action.payload.userData
+      state.userData = action.payload.userData;
     }
   },
-})
+});
 
 export const { setUserData } = userSlice.actions;
 export default userSlice.reducer;
