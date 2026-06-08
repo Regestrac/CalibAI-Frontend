@@ -7,7 +7,7 @@ const userData = true;
 
 const Home = () => {
   return (
-    <div className='h-screen flex bg-gradient-to-br from-bg-primary via-[#0c0b20] to-bg-primary text-white overflow-hidden'>
+    <div className='h-screen flex bg-linear-to-br from-bg-primary via-[#0c0b20] to-bg-primary text-white overflow-hidden'>
 
       <Sidebar />
       <ChatArea />
