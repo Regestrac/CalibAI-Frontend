@@ -4,6 +4,8 @@ type Conversation = {
   _id: string;
   title: string;
   createdAt: string;
+  updatedAt: string;
+  userId: string;
 };
 
 type InitialStateType = {
