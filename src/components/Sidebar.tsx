@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LoaderCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, SquarePen, X } from 'lucide-react';
+import { Coins, LoaderCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, SquarePen, X } from 'lucide-react';
 import { getConversations } from '../services/getConversations';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { addConversation, setConversations } from '../redux/conversationSlice';
@@ -16,6 +16,7 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
   const [loading, setLoading] = useState(false);
 
   const conversations = useAppSelector((state) => state.conversation.conversations);
+  const userData = useAppSelector((state) => state.user.userData);
 
   const { pathname } = useLocation();
 
@@ -113,12 +114,41 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
                   : 'text-text-secondary border-l-transparent hover:bg-bg-elevated hover:text-white'
                   }`}
               >
-                <MessageSquare size={16} className='shrink-0' />
-                {!isCollapsed && <span className='text-sm truncate'>{chat.title}</span>}
+                <MessageSquare size={16} className={`shrink-0 ${pathname === `/chat/${chat._id}` ? 'text-primary-light' : ''}`} />
+                {!isCollapsed && <span className='text-sm truncate'>{chat.title || 'New Chat'}</span>}
               </Link>
             ))
           )}
         </nav>
+        <div className='mx-2.5 border-t border-white/6' />
+        <div className='flex items-center gap-3 px-3 py-5 min-w-67.5'>
+          {isCollapsed ? (
+            userData?.avatarUrl ? (
+              <img src={userData.avatarUrl} alt='Profile pic' className='w-8 h-8 rounded-full object-cover shrink-0' />
+            ) : (
+              <div className='w-8 h-8 rounded-full bg-linear-to-br from-primary to-primary-dark flex items-center justify-center text-xs font-medium text-white shrink-0'>
+                {userData?.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )
+          ) : (
+            <>
+              {userData?.avatarUrl ? (
+                <img src={userData.avatarUrl} alt='Profile pic' className='w-8 h-8 rounded-full object-cover shrink-0' />
+              ) : (
+                <div className='w-8 h-8 rounded-full bg-linear-to-br from-primary to-primary-dark flex items-center justify-center text-xs font-medium text-white shrink-0'>
+                  {userData?.name?.charAt(0)?.toUpperCase() || 'U'}
+                </div>
+              )}
+              <div className='flex-1 min-w-0'>
+                <p className='text-sm font-medium text-white truncate'>{userData?.name || 'User'}</p>
+              </div>
+              <button className='flex items-center gap-1.5 text-xs text-accent hover:text-accent-hover transition-colors cursor-pointer'>
+                <Coins size={14} />
+                Credits
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </>
   );

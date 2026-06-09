@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/*
+Token            Value                     Usage
+-------          ------------------------- ------------------------------
+primary          #6366f1 (indigo-500)      Buttons, borders, accents
+primary-dark     #6d28d9 (violet-700)      Gradient partner, deep accents
+primary-light    #818cf8 (indigo-400)      Lighter variant
+accent           #a78bfa (violet-400)      Highlights
+accent-hover     #8b5cf6 (violet-500)      Hover states
+bg-primary       #0b0a1a                   Main dark background
+bg-secondary     #0a0915                   Sidebar
+bg-card          #111027                   Cards/modals
+bg-elevated      #1a1838                   Hover/active backgrounds
+text-secondary   #9ca3af                   Secondary text
+text-muted       #6b7280                   Muted text
+overlay          rgba(0,0,0,0.6)           Modal overlays
+*/
+
 @theme {
   --color-primary: #6366f1;
   --color-primary-dark: #6d28d9;
