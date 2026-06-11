@@ -2,12 +2,17 @@ import { signInWithPopup } from "firebase/auth";
 import GoogleIcon from "../assets/icons/GoogleIcon";
 import { auth, googleProvider } from "../utils/firebase";
 import api from "../utils/axios";
+import { useAppDispatch } from "../hooks/redux-hooks";
+import { setUserData } from "../redux/userSlice";
 
 const SignupPage = () => {
+  const dispatch = useAppDispatch();
+
   const handleLogin = async (token: string) => {
     try {
       const { data } = await api.post('/api/auth/login', { token });
       console.log(data);
+      dispatch(setUserData({ userData: { avatarUrl: data?.user?.avatarUrl, email: data?.user?.email, name: data?.user?.name, userId: data?.user?._id } }));
     } catch (error) {
       console.log(`Login error: ${error}`);
     }
@@ -16,6 +21,7 @@ const SignupPage = () => {
   const handleContinueWithGoogle = async () => {
     const data = await signInWithPopup(auth, googleProvider);
     console.log(data);
+
 
     const token = await data?.user?.getIdToken();
     handleLogin(token);
