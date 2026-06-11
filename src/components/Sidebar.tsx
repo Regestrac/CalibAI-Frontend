@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Coins, LoaderCircle, MessageSquare, PanelLeftClose, PanelLeftOpen, SquarePen, X } from 'lucide-react';
+import { Coins, LoaderCircle, LogOut, MessageSquare, PanelLeftClose, PanelLeftOpen, SquarePen, X } from 'lucide-react';
 import { getConversations } from '../services/getConversations';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { addConversation, setConversations } from '../redux/conversationSlice';
 import { createConversation } from '../services/createConversation';
+import { logout } from '../services/logout';
+import { setUserData } from '../redux/userSlice';
 
 type SidebarProps = {
   mobileOpen: boolean;
@@ -29,12 +31,21 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
       dispatch(setConversations(data));
       setLoading(false);
     };
-    getConv();
-  }, [dispatch]);
+    if (userData?.userId) {
+      getConv();
+    }
+  }, [dispatch, userData?.userId]);
 
   const handleNewChatClick = async () => {
     const data = await createConversation();
     dispatch(addConversation(data));
+  };
+
+  const handleCreditsClick = () => { };
+
+  const handleLogout = () => {
+    logout();
+    dispatch(setUserData({ userData: null }));
   };
 
   const isCollapsed = desktopCollapsed;
@@ -142,10 +153,14 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
               <div className='flex-1 min-w-0'>
                 <p className='text-sm font-medium text-white truncate'>{userData?.name || 'User'}</p>
               </div>
-              <button className='flex items-center gap-1.5 text-xs text-accent hover:text-accent-hover transition-colors cursor-pointer'>
-                <Coins size={14} />
-                Credits
-              </button>
+              <div className='flex items-center gap-1'>
+                <button onClick={handleCreditsClick} className='p-1.5 rounded-md text-text-secondary hover:text-accent-hover transition-colors cursor-pointer' title='Credits'>
+                  <Coins size={18} />
+                </button>
+                <button onClick={handleLogout} className='p-1.5 rounded-md text-text-secondary hover:text-red-400 transition-colors cursor-pointer' title='Logout'>
+                  <LogOut size={18} />
+                </button>
+              </div>
             </>
           )}
         </div>
