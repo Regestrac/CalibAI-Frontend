@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Coins, LoaderCircle, LogOut, MessageSquare, PanelLeftClose, PanelLeftOpen, SquarePen, X } from 'lucide-react';
 import { getConversations } from '../services/getConversations';
@@ -14,8 +14,9 @@ type SidebarProps = {
 };
 
 const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
-  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const creatingChatRef = useRef(false);
 
   const conversations = useAppSelector((state) => state.conversation.conversations);
   const userData = useAppSelector((state) => state.user.userData);
@@ -36,9 +37,18 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
     }
   }, [dispatch, userData?.userId]);
 
+  useEffect(() => {
+    if (mobileOpen && isCollapsed) {
+      setIsCollapsed(false);
+    }
+  }, [isCollapsed, mobileOpen]);
+
   const handleNewChatClick = async () => {
+    if (creatingChatRef.current) return;
+    creatingChatRef.current = true;
     const data = await createConversation();
     dispatch(addConversation(data));
+    creatingChatRef.current = false;
   };
 
   const handleCreditsClick = () => { };
@@ -48,17 +58,8 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
     dispatch(setUserData({ userData: null }));
   };
 
-  const isCollapsed = desktopCollapsed;
-
   return (
     <>
-      {mobileOpen && (
-        <div
-          className='fixed inset-0 z-40 bg-overlay lg:hidden'
-          onClick={onCloseMobile}
-        />
-      )}
-
       <div
         className={`
           fixed inset-y-0 left-0 z-50 h-screen shrink-0 bg-bg-secondary border-r border-white/6
@@ -85,7 +86,7 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
               <X size={20} />
             </button>
             <button
-              onClick={() => setDesktopCollapsed((prev) => !prev)}
+              onClick={() => setIsCollapsed((prev) => !prev)}
               className='p-1.5 rounded-md text-text-secondary hover:text-white hover:bg-bg-elevated transition-colors cursor-pointer max-lg:hidden'
             >
               {isCollapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
