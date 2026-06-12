@@ -9,7 +9,7 @@ import { setMessages, setLoading } from '../redux/messageSlice';
 
 const ChatArea = () => {
   const { pathname } = useLocation();
-  const id = pathname.split('/')?.at(-1);
+  const id = pathname.includes('/chat/') ? pathname.split('/')?.at(-1) : '';
 
   const dispatch = useAppDispatch();
 

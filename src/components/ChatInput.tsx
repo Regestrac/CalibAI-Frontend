@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Send, Paperclip, Mic } from 'lucide-react';
-import { useAppDispatch } from '../hooks/redux-hooks';
+import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { addMessage, type Message } from '../redux/messageSlice';
+import { sendMessage } from '../services/sendMessage';
 
 const ChatInput = () => {
   const [input, setInput] = useState('');
@@ -9,7 +11,13 @@ const ChatInput = () => {
 
   const dispatch = useAppDispatch();
 
-  const onSend = (text: string) => {
+  const { pathname } = useLocation();
+  const urlId = pathname.includes('/chat/') ? pathname.split('/')?.at(-1) : '';
+
+  const reduxId = useAppSelector((s) => s.conversation.activeConversationId);
+  const conversationId = reduxId ?? urlId ?? null;
+
+  const onSend = async (text: string) => {
     const userMsg: Message = {
       _id: Date.now().toString(),
       role: 'user',
@@ -17,6 +25,20 @@ const ChatInput = () => {
       createdAt: new Date().toISOString(),
     };
     dispatch(addMessage(userMsg));
+
+    if (conversationId) {
+      const data = await sendMessage(conversationId, text);
+
+      if (data.success) {
+        const agentMsg: Message = {
+          _id: Date.now().toString(),
+          role: 'assistant',
+          content: data.message,
+          createdAt: new Date().toISOString(),
+        };
+        dispatch(addMessage(agentMsg));
+      }
+    }
   };
 
   const handleSend = () => {
