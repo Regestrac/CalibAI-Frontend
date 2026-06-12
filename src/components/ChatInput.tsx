@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Paperclip, Mic } from 'lucide-react';
 import { useAppDispatch } from '../hooks/redux-hooks';
 import { addMessage, type Message } from '../redux/messageSlice';
 
@@ -42,16 +42,28 @@ const ChatInput = () => {
 
   return (
     <div className='px-4 pb-4 shrink-0'>
-      <div className='flex items-end gap-2 bg-bg-card border border-white/6 rounded-2xl px-4 py-3 focus-within:border-primary/50 transition-colors'>
+      <div className='flex items-center gap-2 bg-bg-card border border-white/6 rounded-2xl px-4 py-3 focus-within:border-primary/50 transition-colors'>
+        <button
+          type='button'
+          className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0'
+        >
+          <Paperclip size={18} />
+        </button>
         <textarea
           ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder='Type a message...'
+          placeholder='Ask anything'
           rows={1}
           className='flex-1 bg-transparent text-sm text-white placeholder-text-muted outline-none resize-none max-h-40'
         />
+        <button
+          type='button'
+          className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0'
+        >
+          <Mic size={18} />
+        </button>
         <button
           onClick={handleSend}
           disabled={!input.trim()}
@@ -61,7 +73,7 @@ const ChatInput = () => {
         </button>
       </div>
       <p className='text-[11px] text-text-muted text-center mt-2'>
-        AI responses may be inaccurate. Verify important information.
+        CalibAI can make mistakes. Verify important information.
       </p>
     </div>
   );
