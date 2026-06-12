@@ -1,6 +1,6 @@
 export type Message = {
-  id: string;
+  _id: string;
   role: 'user' | 'assistant';
   content: string;
-  timestamp: Date;
+  createdAt: string;
 };

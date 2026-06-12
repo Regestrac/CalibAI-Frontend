@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import { Bot, User } from 'lucide-react';
 import type { Message } from '../types/chat';
 
-const formatTime = (date: Date) => {
+const formatTime = (dateStr: string) => {
+  const date = new Date(dateStr);
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
@@ -16,7 +17,7 @@ const MessageList = ({ messages }: { messages: Message[] }) => {
   return (
     <div className='flex-1 overflow-y-auto px-6 py-4 space-y-4'>
       {messages.map((msg) => (
-        <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
+        <div key={msg._id} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
           {msg.role === 'assistant' && (
             <div className='w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1'>
               <Bot size={16} className='text-primary-light' />
@@ -32,7 +33,7 @@ const MessageList = ({ messages }: { messages: Message[] }) => {
               {msg.content}
             </div>
             <p className={`text-[11px] text-text-muted mt-1 ${msg.role === 'user' ? 'text-right' : ''}`}>
-              {formatTime(msg.timestamp)}
+              {formatTime(msg.createdAt)}
             </p>
           </div>
           {msg.role === 'user' && (
