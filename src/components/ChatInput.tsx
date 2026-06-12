@@ -1,9 +1,23 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
+import { useAppDispatch } from '../hooks/redux-hooks';
+import { addMessage, type Message } from '../redux/messageSlice';
 
-const ChatInput = ({ onSend }: { onSend: (text: string) => void }) => {
+const ChatInput = () => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const dispatch = useAppDispatch();
+
+  const onSend = (text: string) => {
+    const userMsg: Message = {
+      _id: Date.now().toString(),
+      role: 'user',
+      content: text,
+      createdAt: new Date().toISOString(),
+    };
+    dispatch(addMessage(userMsg));
+  };
 
   const handleSend = () => {
     const trimmed = input.trim();
