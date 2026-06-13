@@ -29,11 +29,11 @@ const ChatInput = () => {
     if (conversationId) {
       const data = await sendMessage(conversationId, text);
 
-      if (data.success) {
+      if (data?.data) {
         const agentMsg: Message = {
           _id: Date.now().toString(),
           role: 'assistant',
-          content: data.message,
+          content: data?.data,
           createdAt: new Date().toISOString(),
         };
         dispatch(addMessage(agentMsg));
