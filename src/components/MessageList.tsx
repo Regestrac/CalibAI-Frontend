@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Bot, LoaderCircle, User } from 'lucide-react';
 import { useAppSelector } from '../hooks/redux-hooks';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const formatTime = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -48,7 +50,9 @@ const MessageList = () => {
                 : 'bg-bg-card text-gray-200 rounded-bl-md border border-white/6'
                 }`}
             >
-              {msg.content}
+              <Markdown remarkPlugins={[remarkGfm]}>
+                {msg.content}
+              </Markdown>
             </div>
             <p className={`text-[11px] text-text-muted mt-1 ${msg.role === 'user' ? 'text-right' : ''}`}>
               {formatTime(msg.createdAt)}
