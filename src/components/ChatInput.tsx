@@ -1,13 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Send, Paperclip, Mic } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { addMessage, type Message } from '../redux/messageSlice';
 import { sendMessage } from '../services/sendMessage';
+import { createConversation } from '../services/createConversation';
+import { addConversation } from '../redux/conversationSlice';
 
 const ChatInput = () => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
@@ -26,8 +30,15 @@ const ChatInput = () => {
     };
     dispatch(addMessage(userMsg));
 
-    if (conversationId) {
-      const data = await sendMessage(conversationId, text);
+    let convId = conversationId;
+    if (!convId) {
+      const conv = await createConversation();
+      dispatch(addConversation(conv));
+      convId = conv?._id;
+    }
+
+    if (convId) {
+      const data = await sendMessage(convId, text);
 
       if (data?.data) {
         const agentMsg: Message = {
@@ -37,6 +48,10 @@ const ChatInput = () => {
           createdAt: new Date().toISOString(),
         };
         dispatch(addMessage(agentMsg));
+
+        if (!conversationId && convId) {
+          navigate(`/chat/${convId}`);
+        }
       }
     }
   };
