@@ -44,8 +44,8 @@ const ChatInput = () => {
     }
 
     if (title === "New Chat") {
-      const newConv = await updateConversation(convId, text);
-      dispatch(updateConversationTitle({ convId, title: newConv?.title }));
+      dispatch(updateConversationTitle({ convId, title: text }));
+      await updateConversation(convId, text);
     }
 
     if (convId) {

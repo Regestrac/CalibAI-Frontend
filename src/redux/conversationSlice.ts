@@ -30,8 +30,12 @@ const conversationSlice = createSlice({
     addConversation: (state, action) => {
       state.conversations.unshift(action.payload);
     },
-    updateConversationTitle: (state, action) => {
-      state.conversations.find((conversation) => conversation._id === action.payload?.convId)!.title = action.payload.title;
+    updateConversationTitle: (state, action: PayloadAction<{ convId: string, title: string }>) => {
+      state.conversations = state.conversations.map((conversation) =>
+        conversation._id === action.payload.convId
+          ? { ...conversation, title: action.payload.title }
+          : conversation
+      );
     }
   },
 });
