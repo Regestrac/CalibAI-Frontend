@@ -29,9 +29,12 @@ const conversationSlice = createSlice({
     },
     addConversation: (state, action) => {
       state.conversations.unshift(action.payload);
+    },
+    updateConversationTitle: (state, action) => {
+      state.conversations.find((conversation) => conversation._id === action.payload?.convId)!.title = action.payload.title;
     }
   },
 });
 
-export const { setConversations, addConversation } = conversationSlice.actions;
+export const { setConversations, addConversation, updateConversationTitle } = conversationSlice.actions;
 export default conversationSlice.reducer;

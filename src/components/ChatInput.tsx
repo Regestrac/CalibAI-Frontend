@@ -5,7 +5,8 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { addMessage, type Message } from '../redux/messageSlice';
 import { sendMessage } from '../services/sendMessage';
 import { createConversation } from '../services/createConversation';
-import { addConversation } from '../redux/conversationSlice';
+import { addConversation, updateConversationTitle } from '../redux/conversationSlice';
+import { updateConversation } from '../services/updateConversation';
 
 const ChatInput = () => {
   const [input, setInput] = useState('');
@@ -21,6 +22,9 @@ const ChatInput = () => {
   const reduxId = useAppSelector((s) => s.conversation.activeConversationId);
   const conversationId = reduxId ?? urlId ?? null;
 
+  const currConv = useAppSelector((state) => state.conversation.conversations.find((conv) => conv._id === conversationId));
+  const convTitle = currConv?.title;
+
   const onSend = async (text: string) => {
     const userMsg: Message = {
       _id: Date.now().toString(),
@@ -31,10 +35,17 @@ const ChatInput = () => {
     dispatch(addMessage(userMsg));
 
     let convId = conversationId;
+    let title = convTitle;
     if (!convId) {
       const conv = await createConversation();
       dispatch(addConversation(conv));
       convId = conv?._id;
+      title = conv?.title;
+    }
+
+    if (title === "New Chat") {
+      const newConv = await updateConversation(convId, text);
+      dispatch(updateConversationTitle({ convId, title: newConv?.title }));
     }
 
     if (convId) {
