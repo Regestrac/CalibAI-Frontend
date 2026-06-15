@@ -5,7 +5,7 @@ import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import { getMessages } from '../services/getMessages';
 import { useAppDispatch } from '../hooks/redux-hooks';
-import { setMessages, setLoading } from '../redux/messageSlice';
+import { setMessages, setLoading, clearMessages } from '../redux/messageSlice';
 
 const ChatArea = () => {
   const { pathname } = useLocation();
@@ -14,8 +14,6 @@ const ChatArea = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!id) return;
-
     const fetchMessages = async () => {
       dispatch(setLoading(true));
       const data = await getMessages(id);
@@ -23,7 +21,11 @@ const ChatArea = () => {
       dispatch(setLoading(false));
     };
 
-    fetchMessages();
+    if (id) {
+      fetchMessages();
+    } else {
+      dispatch(clearMessages());
+    };
   }, [dispatch, id]);
 
   return (

@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Coins, LoaderCircle, LogOut, MessageSquare, PanelLeftClose, PanelLeftOpen, SquarePen, X } from 'lucide-react';
 import { getConversations } from '../services/getConversations';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { addConversation, setConversations } from '../redux/conversationSlice';
-import { createConversation } from '../services/createConversation';
+import { setConversations } from '../redux/conversationSlice';
 import { logout } from '../services/logout';
 import { setUserData } from '../redux/userSlice';
 
@@ -16,7 +15,6 @@ type SidebarProps = {
 const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const creatingChatRef = useRef(false);
 
   const conversations = useAppSelector((state) => state.conversation.conversations);
   const userData = useAppSelector((state) => state.user.userData);
@@ -24,6 +22,7 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
   const { pathname } = useLocation();
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getConv = async () => {
@@ -44,11 +43,7 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
   }, [isCollapsed, mobileOpen]);
 
   const handleNewChatClick = async () => {
-    if (creatingChatRef.current) return;
-    creatingChatRef.current = true;
-    const data = await createConversation();
-    dispatch(addConversation(data));
-    creatingChatRef.current = false;
+    navigate("/");
   };
 
   const handleCreditsClick = () => { };
