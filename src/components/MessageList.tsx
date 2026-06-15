@@ -28,8 +28,12 @@ const MessageList = () => {
 
   if (!loading && !messages.length) {
     return (
-      <div className='flex-1 flex items-center justify-center text-sm text-text-muted'>
-        No messages yet
+      <div className='flex-1 flex flex-col items-center justify-center gap-3 px-6 text-center'>
+        <div className='w-12 h-12 rounded-2xl bg-linear-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg shadow-primary/20'>
+          <Bot size={22} className='text-white' />
+        </div>
+        <h2 className='text-3xl font-semibold text-white tracking-tight'>Hey, what's on your mind?</h2>
+        <p className='text-sm text-text-muted'>Ask me anything, or give me a task to get started.</p>
       </div>
     );
   }
