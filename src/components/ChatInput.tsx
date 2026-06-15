@@ -72,7 +72,7 @@ const ChatInput = () => {
     }
 
     if (convId) {
-      const data = await sendMessage(convId, text);
+      const data = await sendMessage(convId, text, selectedAgent);
 
       if (data?.data) {
         const agentMsg: Message = {
