@@ -1,0 +1,1 @@
+export type Agents = 'chat' | 'coding' | 'search' | 'image' | 'pdf' | 'ppt';

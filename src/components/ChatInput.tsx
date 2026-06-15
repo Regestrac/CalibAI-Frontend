@@ -1,34 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  Code2,
-  FileText,
-  Image as ImageIcon,
-  MessagesSquare,
-  Mic,
-  Paperclip,
-  Presentation,
-  Search,
-  Send,
-  Sparkles,
-  type LucideIcon,
-} from 'lucide-react';
+import { Mic, Paperclip, Send } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { addMessage, type Message } from '../redux/messageSlice';
 import { sendMessage } from '../services/sendMessage';
 import { createConversation } from '../services/createConversation';
 import { addConversation, updateConversationTitle } from '../redux/conversationSlice';
 import { updateConversation } from '../services/updateConversation';
-
-const agents: { id: string; icon: LucideIcon; label: string }[] = [
-  { id: 'auto', icon: Sparkles, label: 'Auto' },
-  { id: 'chat', icon: MessagesSquare, label: 'Chat' },
-  { id: 'coding', icon: Code2, label: 'Coding' },
-  { id: 'search', icon: Search, label: 'Search' },
-  { id: 'image', icon: ImageIcon, label: 'Image' },
-  { id: 'pdf', icon: FileText, label: 'PDF' },
-  { id: 'ppt', icon: Presentation, label: 'PPT' },
-];
+import { agents } from '../helpers/constants';
 
 const ChatInput = () => {
   const [input, setInput] = useState('');
