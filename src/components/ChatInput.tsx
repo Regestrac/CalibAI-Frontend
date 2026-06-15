@@ -1,6 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Send, Paperclip, Mic } from 'lucide-react';
+import {
+  Code2,
+  FileText,
+  Image as ImageIcon,
+  MessagesSquare,
+  Mic,
+  Paperclip,
+  Presentation,
+  Search,
+  Send,
+  Sparkles,
+  type LucideIcon,
+} from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { addMessage, type Message } from '../redux/messageSlice';
 import { sendMessage } from '../services/sendMessage';
@@ -8,8 +20,19 @@ import { createConversation } from '../services/createConversation';
 import { addConversation, updateConversationTitle } from '../redux/conversationSlice';
 import { updateConversation } from '../services/updateConversation';
 
+const agents: { id: string; icon: LucideIcon; label: string }[] = [
+  { id: 'auto', icon: Sparkles, label: 'Auto' },
+  { id: 'chat', icon: MessagesSquare, label: 'Chat' },
+  { id: 'coding', icon: Code2, label: 'Coding' },
+  { id: 'search', icon: Search, label: 'Search' },
+  { id: 'image', icon: ImageIcon, label: 'Image' },
+  { id: 'pdf', icon: FileText, label: 'PDF' },
+  { id: 'ppt', icon: Presentation, label: 'PPT' },
+];
+
 const ChatInput = () => {
   const [input, setInput] = useState('');
+  const [selectedAgent, setSelectedAgent] = useState('auto');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const navigate = useNavigate();
@@ -89,36 +112,57 @@ const ChatInput = () => {
   }, [input]);
 
   return (
-    <div className='px-4 pb-4 shrink-0'>
-      <div className='flex items-center gap-2 bg-bg-card border border-white/6 rounded-2xl px-4 py-3 focus-within:border-primary/50 transition-colors'>
-        <button
-          type='button'
-          className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0'
-        >
-          <Paperclip size={18} />
-        </button>
-        <textarea
-          ref={textareaRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder='Ask anything'
-          rows={1}
-          className='flex-1 bg-transparent text-sm text-white placeholder-text-muted outline-none resize-none max-h-40'
-        />
-        <button
-          type='button'
-          className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0'
-        >
-          <Mic size={18} />
-        </button>
-        <button
-          onClick={handleSend}
-          disabled={!input.trim()}
-          className='p-2 rounded-lg bg-primary text-white hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0'
-        >
-          <Send size={16} />
-        </button>
+    <div className="px-4 pb-4 shrink-0">
+      <div className='bg-bg-card border border-white/6 rounded-2xl px-3 py-2.5 focus-within:border-primary/50 transition-colors'>
+        <div className='flex items-center gap-2 flex-wrap'>
+          {agents.map((agent) => {
+            const active = selectedAgent === agent.id;
+            return (
+              <button
+                key={agent.id}
+                type='button'
+                onClick={() => setSelectedAgent(agent.id)}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-colors cursor-pointer ${active
+                  ? 'bg-primary/15 text-primary-light border-primary/40'
+                  : 'text-text-muted  border-primary-light/20 hover:text-white hover:bg-white/5'}`
+                }
+              >
+                <agent.icon size={14} />
+                {agent.label}
+              </button>
+            );
+          })}
+        </div>
+        <div className='flex items-center gap-2 pt-2.5'>
+          <button
+            type='button'
+            className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0'
+          >
+            <Paperclip size={18} />
+          </button>
+          <textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder='Ask anything'
+            rows={1}
+            className='flex-1 bg-transparent text-sm text-white placeholder-text-muted outline-none resize-none max-h-40'
+          />
+          <button
+            type='button'
+            className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0'
+          >
+            <Mic size={18} />
+          </button>
+          <button
+            onClick={handleSend}
+            disabled={!input.trim()}
+            className='p-2 rounded-lg bg-primary text-white hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0'
+          >
+            <Send size={16} />
+          </button>
+        </div>
       </div>
       <p className='text-[11px] text-text-muted text-center mt-2'>
         CalibAI can make mistakes. Verify important information.
