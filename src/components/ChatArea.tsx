@@ -29,7 +29,7 @@ const ChatArea = () => {
   }, [dispatch, id]);
 
   return (
-    <div className='flex-1 h-full flex flex-col'>
+    <div className='flex-1 h-full flex flex-col min-w-0'>
       <Nav />
       <MessageList />
       <ChatInput />
