@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 
 const formatTime = (dateStr: string) => {
   const date = new Date(dateStr);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
 };
 
 const MessageList = () => {
@@ -57,6 +57,19 @@ const MessageList = () => {
               <Markdown remarkPlugins={[remarkGfm]}>
                 {msg.content}
               </Markdown>
+              {msg.images?.length ? (
+                <div className='grid grid-cols-3 gap-2 mt-3'>
+                  {msg.images.map((src, i) => (
+                    <a key={i} href={src} target='_blank' rel='noreferrer'>
+                      <img
+                        src={src}
+                        alt={`result ${i + 1}`}
+                        className='w-full h-30 object-cover rounded-lg border border-white/10'
+                      />
+                    </a>
+                  ))}
+                </div>
+              ) : null}
             </div>
             <p className={`text-[11px] text-text-muted mt-1 ${msg.role === 'user' ? 'text-right' : ''}`}>
               {formatTime(msg.createdAt)}

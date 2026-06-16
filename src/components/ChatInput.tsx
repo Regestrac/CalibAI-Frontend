@@ -58,6 +58,7 @@ const ChatInput = () => {
           _id: Date.now().toString(),
           role: 'assistant',
           content: data?.data,
+          images: data?.images,
           createdAt: new Date().toISOString(),
         };
         dispatch(addMessage(agentMsg));
