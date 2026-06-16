@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bot, LoaderCircle, User } from 'lucide-react';
 import { useAppSelector } from '../hooks/redux-hooks';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import Lightbox from './Lightbox';
 
 const formatTime = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -13,6 +14,8 @@ const MessageList = () => {
   const { messages, loading } = useAppSelector((state) => state.message);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -60,13 +63,17 @@ const MessageList = () => {
               {msg.images?.length ? (
                 <div className='grid grid-cols-3 gap-2 mt-3'>
                   {msg.images.map((src, i) => (
-                    <a key={i} href={src} target='_blank' rel='noreferrer'>
+                    <button
+                      key={i}
+                      onClick={() => setLightbox({ images: msg.images!, index: i })}
+                      className='p-0 border-0 cursor-pointer'
+                    >
                       <img
                         src={src}
                         alt={`result ${i + 1}`}
                         className='w-full h-30 object-cover rounded-lg border border-white/10'
                       />
-                    </a>
+                    </button>
                   ))}
                 </div>
               ) : null}
@@ -83,6 +90,13 @@ const MessageList = () => {
         </div>
       ))}
       <div ref={bottomRef} />
+      {lightbox && (
+        <Lightbox
+          images={lightbox.images}
+          initialIndex={lightbox.index}
+          onClose={() => setLightbox(null)}
+        />
+      )}
     </div>
   );
 };
