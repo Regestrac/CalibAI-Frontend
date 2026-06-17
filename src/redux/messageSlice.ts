@@ -24,12 +24,14 @@ type InitialStateType = {
   messages: Message[];
   loading: boolean;
   artifacts: ArtifactType[],
+  isArtifactOpen: boolean,
 };
 
 const initialState: InitialStateType = {
   messages: [],
   loading: false,
   artifacts: [],
+  isArtifactOpen: false,
 };
 
 const messageSlice = createSlice({
@@ -51,6 +53,9 @@ const messageSlice = createSlice({
     setArtifacts: (state, action) => {
       state.artifacts = action?.payload;
     },
+    setArtifactOpen: (state, action: PayloadAction<boolean>) => {
+      state.isArtifactOpen = action.payload;
+    },
   },
 });
 
@@ -60,5 +65,6 @@ export const {
   setLoading,
   clearMessages,
   setArtifacts,
+  setArtifactOpen,
 } = messageSlice.actions;
 export default messageSlice.reducer;
