@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Check, Code2, Copy, Eye, FileCode, FolderOpen, X } from 'lucide-react';
+import { Check, Code2, Copy, Eye, FileCode, FolderOpen, Maximize2, Minimize2, X } from 'lucide-react';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { setArtifactOpen, type ArtifactFileType } from '../redux/messageSlice';
+import { setArtifactExpanded, setArtifactOpen, type ArtifactFileType } from '../redux/messageSlice';
 
 const getLanguage = (name: string) => {
   const ext = name.split('.').pop()?.toLowerCase() ?? '';
@@ -59,6 +59,7 @@ const buildPreviewHtml = (files: ArtifactFileType[]): string => {
 
 const Artifact = () => {
   const isArtifactOpen = useAppSelector((state) => state.message.isArtifactOpen);
+  const isArtifactExpanded = useAppSelector((state) => state.message.isArtifactExpanded);
   const artifacts = useAppSelector((state) => state.message.artifacts);
 
   const dispatch = useAppDispatch();
@@ -85,10 +86,7 @@ const Artifact = () => {
   };
 
   return (
-    <div
-      className={`hidden lg:flex h-full flex-col border-l border-primary/6 overflow-hidden shrink-0 transition-all duration-300 ease-in-out ${!isArtifactOpen ? 'w-0 border-l-0 opacity-0' : 'w-100 opacity-100'
-        }`}
-    >
+    <div className={`hidden lg:flex h-full flex-col border-l border-primary/6 overflow-hidden shrink-0 transition-all duration-300 ease-in-out ${!isArtifactOpen ? 'w-0 border-l-0 opacity-0' : isArtifactExpanded ? 'flex-1 opacity-100' : 'w-100 opacity-100'}`}>
       {isArtifactOpen && (
         <>
           <div className='flex items-center justify-between px-4 py-3 border-b border-white/6 shrink-0'>
@@ -98,6 +96,13 @@ const Artifact = () => {
             </span>
             <div className='flex items-center gap-1'>
               <span className='text-[11px] text-text-secondary mr-1'>{artifacts.length}</span>
+              <button
+                onClick={() => dispatch(setArtifactExpanded(!isArtifactExpanded))}
+                className='p-1.5 rounded-md text-text-secondary hover:text-white hover:bg-bg-elevated transition-colors cursor-pointer'
+                title={isArtifactExpanded ? 'Shrink panel' : 'Expand panel'}
+              >
+                {isArtifactExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+              </button>
               <button
                 onClick={() => dispatch(setArtifactOpen(false))}
                 className='p-1.5 rounded-md text-text-secondary hover:text-white hover:bg-bg-elevated transition-colors cursor-pointer'
