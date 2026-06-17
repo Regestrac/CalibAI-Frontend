@@ -1,5 +1,17 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+export type ArtifactFileType = {
+  name: string;
+  content: string;
+};
+
+export type ArtifactType = {
+  id: number;
+  type: string;
+  title: string;
+  files: ArtifactFileType[];
+};
+
 export type Message = {
   _id: string;
   role: "user" | "assistant";
@@ -11,11 +23,13 @@ export type Message = {
 type InitialStateType = {
   messages: Message[];
   loading: boolean;
+  artifacts: ArtifactType[],
 };
 
 const initialState: InitialStateType = {
   messages: [],
   loading: false,
+  artifacts: [],
 };
 
 const messageSlice = createSlice({
@@ -34,8 +48,17 @@ const messageSlice = createSlice({
     clearMessages: (state) => {
       state.messages = [];
     },
+    setArtifacts: (state, action) => {
+      state.artifacts = action?.payload;
+    },
   },
 });
 
-export const { setMessages, addMessage, setLoading, clearMessages } = messageSlice.actions;
+export const {
+  setMessages,
+  addMessage,
+  setLoading,
+  clearMessages,
+  setArtifacts,
+} = messageSlice.actions;
 export default messageSlice.reducer;
