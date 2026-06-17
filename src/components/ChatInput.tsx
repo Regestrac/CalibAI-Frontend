@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Mic, Paperclip, Send } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { addMessage, type Message } from '../redux/messageSlice';
+import { addMessage, setArtifacts, type Message } from '../redux/messageSlice';
 import { sendMessage } from '../services/sendMessage';
 import { createConversation } from '../services/createConversation';
 import { addConversation, updateConversationTitle } from '../redux/conversationSlice';
@@ -62,6 +62,7 @@ const ChatInput = () => {
           createdAt: new Date().toISOString(),
         };
         dispatch(addMessage(agentMsg));
+        dispatch(setArtifacts(data?.artifacts || []));
 
         if (!conversationId && convId) {
           navigate(`/chat/${convId}`);
