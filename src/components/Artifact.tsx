@@ -132,10 +132,15 @@ const Artifact = () => {
               <button
                 key={artifact.id}
                 onClick={() => setActiveId(artifact.id)}
-                className={`w-full text-left px-3 py-2 rounded-lg border transition-colors cursor-pointer ${artifact.id === active?.id ? 'bg-primary/10 border-primary/20' : 'border-transparent hover:bg-bg-elevated'}`}
+                className={`w-full text-left px-3 py-2 rounded-lg border flex gap-2 transition-colors cursor-pointer ${artifact.id === active?.id ? 'bg-primary/10 border-primary/20' : 'border-transparent hover:bg-bg-elevated'}`}
               >
-                <p className='text-xs font-medium text-white truncate'>{artifact.title}</p>
-                <p className='text-[11px] text-text-secondary mt-0.5'>{artifact.type}</p>
+                <span className='bg-primary-light/40 px-2 rounded-lg flex items-center'>
+                  <Code2 size={16} />
+                </span>
+                <div>
+                  <p className='text-xs font-medium text-white truncate'>{artifact.title}</p>
+                  <p className='text-[11px] text-text-secondary mt-0.5'>{artifact.type}</p>
+                </div>
               </button>
             ))}
           </div>
