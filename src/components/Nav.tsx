@@ -1,10 +1,11 @@
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Ellipsis, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setArtifactOpen } from '../redux/messageSlice';
 
 const Nav = () => {
-  const { id } = useParams();
+  const { pathname } = useLocation();
+  const id = pathname.includes('/chat/') ? pathname.split('/')?.at(-1) : '';
   const conversations = useAppSelector((state) => state.conversation.conversations);
   const conversation = conversations.find((c) => c._id === id);
   const title = conversation?.title || 'New Chat';
