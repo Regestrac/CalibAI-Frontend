@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Bot, ExternalLink, LoaderCircle, User } from 'lucide-react';
+import { Bot, ExternalLink, LoaderCircle } from 'lucide-react';
 import { useAppSelector } from '../hooks/redux-hooks';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -46,11 +46,11 @@ const MessageList = () => {
     <div className='flex-1 overflow-y-auto px-6 py-4 space-y-4'>
       {messages.map((msg) => (
         <div key={msg._id} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-          {msg.role === 'assistant' && (
+          {/* {msg.role === 'assistant' && (
             <div className='w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1'>
               <Bot size={16} className='text-primary-light' />
             </div>
-          )}
+          )} */}
           <div className={`max-w-[75%] ${msg.role === 'user' ? 'items-end' : ''}`}>
             <div
               className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${msg.role === 'user'
@@ -120,11 +120,11 @@ const MessageList = () => {
               {formatTime(msg.createdAt)}
             </p>
           </div>
-          {msg.role === 'user' && (
+          {/* {msg.role === 'user' && (
             <div className='w-8 h-8 rounded-full bg-linear-to-br from-primary to-primary-dark flex items-center justify-center shrink-0 mt-1'>
               <User size={16} className='text-white' />
             </div>
-          )}
+          )} */}
         </div>
       ))}
       <div ref={bottomRef} />
