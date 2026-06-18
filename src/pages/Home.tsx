@@ -28,8 +28,10 @@ const Home = () => {
 
           <div className='flex flex-1 overflow-hidden'>
             <Sidebar mobileOpen={mobileSidebarOpen} onCloseMobile={() => setMobileSidebarOpen(false)} />
-            <ChatArea />
-            <Artifact />
+            <div className='flex-1 min-w-0 flex h-full'>
+              <ChatArea />
+              <Artifact />
+            </div>
           </div>
         </>
       ) : (

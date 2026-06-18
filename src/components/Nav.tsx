@@ -20,10 +20,10 @@ const Nav = () => {
       <div className='flex items-center gap-1'>
         <button
           onClick={() => dispatch(setArtifactOpen(!isArtifactOpen))}
-          className={`relative p-1.5 rounded-md transition-colors cursor-pointer hidden lg:block ${isArtifactOpen
+          className={`relative p-1.5 rounded-md transition-colors cursor-pointer ${isArtifactOpen
             ? 'text-primary-light bg-primary/10'
-            : 'text-text-secondary hover:text-white hover:bg-bg-elevated'
-            }`}
+            : 'text-text-secondary hover:text-white hover:bg-bg-elevated'}`
+          }
           title={isArtifactOpen ? 'Close artifacts' : 'Open artifacts'}
         >
           {isArtifactOpen ? <PanelRightClose size={18} /> : <PanelRightOpen size={18} />}
