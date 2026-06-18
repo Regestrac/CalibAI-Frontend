@@ -51,6 +51,9 @@ const messageSlice = createSlice({
     },
     clearMessages: (state) => {
       state.messages = [];
+      state.artifacts = [];
+      state.isArtifactOpen = false;
+      state.isArtifactExpanded = false;
     },
     setArtifacts: (state, action) => {
       state.artifacts = action?.payload;
