@@ -4,59 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Check, Code2, Copy, Eye, FileCode, FolderOpen, Maximize2, Minimize2, X } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { useMediaQuery } from '../hooks/useMediaQuery';
-import { setArtifactExpanded, setArtifactOpen, type ArtifactFileType } from '../redux/messageSlice';
-
-const getLanguage = (name: string) => {
-  const ext = name.split('.').pop()?.toLowerCase() ?? '';
-  const map: Record<string, string> = {
-    js: 'javascript',
-    jsx: 'javascript',
-    ts: 'typescript',
-    tsx: 'typescript',
-    html: 'html',
-    htm: 'html',
-    xml: 'html',
-    svg: 'html',
-    css: 'css',
-    json: 'json',
-    md: 'markdown',
-    markdown: 'markdown',
-    py: 'python',
-    sh: 'shell',
-    bash: 'shell',
-  };
-  return map[ext] ?? 'plaintext';
-};
-
-const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-const inlineStyles = (html: string, files: ArtifactFileType[]) => {
-  return files.reduce((acc, file) => {
-    if (!/\.css$/i.test(file.name)) return acc;
-    const base = escapeRegExp(file.name.split('/').pop() ?? file.name);
-    return acc.replace(
-      new RegExp(`<link\\b[^>]*href=["'][^"']*${base}["'][^>]*/?>`, 'g'),
-      `<style>${file.content}</style>`
-    );
-  }, html);
-};
-
-const inlineScripts = (html: string, files: ArtifactFileType[]) => {
-  return files.reduce((acc, file) => {
-    if (!/\.js$/i.test(file.name)) return acc;
-    const base = escapeRegExp(file.name.split('/').pop() ?? file.name);
-    return acc.replace(
-      new RegExp(`<script\\b[^>]*src=["'][^"']*${base}["'][^>]*>\\s*</script>`, 'g'),
-      `<script>${file.content}</script>`
-    );
-  }, html);
-};
-
-const buildPreviewHtml = (files: ArtifactFileType[]): string => {
-  const htmlFile = files.find((file) => /\.html?$/i.test(file.name));
-  if (!htmlFile) return '';
-  return inlineScripts(inlineStyles(htmlFile.content, files), files);
-};
+import { setArtifactExpanded, setArtifactOpen } from '../redux/messageSlice';
+import { buildPreviewHtml } from '../utils/buildPreview';
+import { getLanguage } from '../utils/getLanguage';
+import { copyToClipboard } from '../utils/copyToClipboard';
 
 const Artifact = () => {
   const isArtifactOpen = useAppSelector((state) => state.message.isArtifactOpen);
@@ -80,7 +31,7 @@ const Artifact = () => {
   const handleCopy = async () => {
     if (!file) return;
     try {
-      await navigator.clipboard.writeText(file.content);
+      await copyToClipboard(file.content);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -199,13 +150,13 @@ const Artifact = () => {
                   <div className='h-full overflow-hidden rounded-lg border border-white/10 bg-[#0d1117]'>
                     <Editor
                       height='100%'
+                      key={file.name}
                       language={getLanguage(file.name)}
                       value={file.content}
                       theme='vs-dark'
                       loading={<span className='block p-4 text-xs text-text-secondary'>Loading editor...</span>}
                       options={{
-                        readOnly: true,
-                        minimap: { enabled: false },
+                        minimap: { enabled: !!isArtifactExpanded, showRegionSectionHeaders: true, showMarkSectionHeaders: true },
                         scrollBeyondLastLine: false,
                         fontSize: 12,
                         lineHeight: 19,
