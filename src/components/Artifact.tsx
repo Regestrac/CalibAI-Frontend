@@ -1,8 +1,7 @@
 import { useState } from 'react';
+import Editor from '@monaco-editor/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, Code2, Copy, Eye, FileCode, FolderOpen, Maximize2, Minimize2, X } from 'lucide-react';
-import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { setArtifactExpanded, setArtifactOpen, type ArtifactFileType } from '../redux/messageSlice';
@@ -11,22 +10,22 @@ const getLanguage = (name: string) => {
   const ext = name.split('.').pop()?.toLowerCase() ?? '';
   const map: Record<string, string> = {
     js: 'javascript',
-    jsx: 'jsx',
+    jsx: 'javascript',
     ts: 'typescript',
-    tsx: 'tsx',
-    html: 'markup',
-    htm: 'markup',
-    xml: 'markup',
-    svg: 'markup',
+    tsx: 'typescript',
+    html: 'html',
+    htm: 'html',
+    xml: 'html',
+    svg: 'html',
     css: 'css',
     json: 'json',
     md: 'markdown',
     markdown: 'markdown',
     py: 'python',
-    sh: 'bash',
-    bash: 'bash',
+    sh: 'shell',
+    bash: 'shell',
   };
-  return map[ext] ?? 'text';
+  return map[ext] ?? 'plaintext';
 };
 
 const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -76,7 +75,7 @@ const Artifact = () => {
   const active = artifacts.find((a) => a.id === activeId) ?? artifacts[0] ?? null;
   const safeIndex = active?.files?.length ? Math.min(fileIndex, active.files.length - 1) : 0;
   const file = active?.files?.[safeIndex] ?? null;
-  const canPreview = file ? getLanguage(file.name) === 'markup' : false;
+  const canPreview = file ? getLanguage(file.name) === 'html' : false;
 
   const handleCopy = async () => {
     if (!file) return;
@@ -197,24 +196,28 @@ const Artifact = () => {
                     className='w-full h-full rounded-lg border border-white/10 bg-white'
                   />
                 ) : (
-                  <div className='h-full overflow-auto rounded-lg border border-white/10 bg-[#0d1117]'>
-                    <SyntaxHighlighter
+                  <div className='h-full overflow-hidden rounded-lg border border-white/10 bg-[#0d1117]'>
+                    <Editor
+                      height='100%'
                       language={getLanguage(file.name)}
-                      style={oneDark}
-                      customStyle={{
-                        margin: 0,
-                        background: 'transparent',
-                        fontSize: '12px',
-                        lineHeight: 1.6,
-                      }}
-                      codeTagProps={{
-                        style: {
-                          fontFamily: 'inherit',
+                      value={file.content}
+                      theme='vs-dark'
+                      loading={<span className='block p-4 text-xs text-text-secondary'>Loading editor...</span>}
+                      options={{
+                        readOnly: true,
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        fontSize: 12,
+                        lineHeight: 19,
+                        wordWrap: 'on',
+                        renderLineHighlight: 'none',
+                        scrollbar: {
+                          verticalScrollbarSize: 6,
+                          horizontalScrollbarSize: 6,
                         },
+                        padding: { top: 12, bottom: 12 },
                       }}
-                    >
-                      {file.content}
-                    </SyntaxHighlighter>
+                    />
                   </div>
                 )}
               </div>
