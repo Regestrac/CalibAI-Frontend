@@ -85,10 +85,11 @@ const MessageList = () => {
                       {children}
                     </td>
                   ),
-                  a: ({ children }) => (
+                  a: ({ children, href }) => (
                     <a
                       target='_blank'
                       rel='noreferrer'
+                      href={href}
                       className='text-primary-light underline inline-flex items-center gap-1'>
                       {children}
                       <ExternalLink size={14} />
