@@ -48,8 +48,8 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
 
   const handleCreditsClick = () => { };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     dispatch(setUserData({ userData: null }));
   };
 

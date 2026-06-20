@@ -2,9 +2,9 @@ import api from "../utils/axios";
 
 export const logout = async () => {
   try {
-    const { data } = await api.post("/api/auth/logout");
-    console.log(data);
+    const response = await api.post("/api/auth/logout");
+    console.log(response?.data);
   } catch (error) {
-    console.log(`Logout error: ${error}`);
+    console.error("Logout error:", error);
   }
 };

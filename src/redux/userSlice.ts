@@ -1,12 +1,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+type UserDataType = {
+  name: string;
+  userId: string;
+  email: string;
+  avatarUrl: string;
+};
+
 type InitialStateType = {
-  userData: {
-    name: string;
-    userId: string;
-    email: string;
-    avatarUrl: string;
-  };
+  userData: UserDataType | null;
 };
 
 const initialState: InitialStateType = {
