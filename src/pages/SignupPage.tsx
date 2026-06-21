@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
+import { LoaderCircle } from "lucide-react";
 import GoogleIcon from "../assets/icons/GoogleIcon";
 import { auth, googleProvider } from "../utils/firebase";
 import api from "../utils/axios";
@@ -7,24 +9,54 @@ import { setUserData } from "../redux/userSlice";
 
 const SignupPage = () => {
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (token: string) => {
-    try {
-      const { data } = await api.post('/api/auth/login', { token });
-      console.log(data);
-      dispatch(setUserData({ userData: { avatarUrl: data?.user?.avatarUrl, email: data?.user?.email, name: data?.user?.name, userId: data?.user?._id } }));
-    } catch (error) {
-      console.log(`Login error: ${error}`);
-    }
+    const { data } = await api.post("/api/auth/login", { token });
+    dispatch(
+      setUserData({
+        userData: {
+          avatarUrl: data?.user?.avatarUrl,
+          email: data?.user?.email,
+          name: data?.user?.name,
+          userId: data?.user?._id,
+        },
+      })
+    );
   };
 
   const handleContinueWithGoogle = async () => {
-    const data = await signInWithPopup(auth, googleProvider);
-    console.log(data);
+    setError(null);
+    setLoading(true);
 
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const token = await result.user.getIdToken(true);
+      await handleLogin(token);
+    } catch (err) {
+      console.error("Login error:", err);
 
-    const token = await data?.user?.getIdToken();
-    handleLogin(token);
+      if (err.code === "auth/popup-closed-by-user") {
+        setError("Sign-in popup was closed. Please try again.");
+      } else if (err.code === "auth/popup-blocked") {
+        setError("Popup was blocked by your browser. Please allow popups and try again.");
+      } else if (err.code === "auth/cancelled-popup-request") {
+        setError("Sign-in was cancelled. Please try again.");
+      } else if (err?.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err?.response?.status === 401) {
+        setError("Authentication failed. Please try signing in again.");
+      } else if (err?.response?.status >= 500) {
+        setError("Server error. Please try again later.");
+      } else if (err.message?.includes("network") || err.message?.includes("Network")) {
+        setError("Network error. Please check your connection and try again.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,13 +65,26 @@ const SignupPage = () => {
         <h1 className="text-2xl font-bold text-center mb-2">Create an account</h1>
         <p className="text-text-muted text-center mb-8">Sign up to get started</p>
 
+        {error && (
+          <div className="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+            {error}
+          </div>
+        )}
+
         <button
           type="button"
-          className="w-full flex items-center justify-center gap-3 border border-primary/30 rounded-lg py-3 px-4 hover:bg-overlay transition-colors cursor-pointer"
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-3 border border-primary/30 rounded-lg py-3 px-4 hover:bg-overlay transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleContinueWithGoogle}
         >
-          <GoogleIcon />
-          Continue with Google
+          {loading ? (
+            <LoaderCircle size={20} className="animate-spin" />
+          ) : (
+            <>
+              <GoogleIcon />
+              Continue with Google
+            </>
+          )}
         </button>
 
         <p className="text-xs text-center text-text-secondary mt-6">
