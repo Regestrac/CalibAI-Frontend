@@ -12,7 +12,7 @@ const formatTime = (dateStr: string) => {
 };
 
 const MessageList = () => {
-  const { messages, loading } = useAppSelector((state) => state.message);
+  const { messages, loading, isAnswering } = useAppSelector((state) => state.message);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -20,7 +20,7 @@ const MessageList = () => {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isAnswering]);
 
   if (loading) {
     return (
@@ -140,6 +140,17 @@ const MessageList = () => {
           )} */}
         </div>
       ))}
+      {isAnswering && (
+        <div className='flex gap-3'>
+          <div className='max-w-[75%]'>
+            <div className='rounded-2xl rounded-bl-md px-4 py-3 bg-bg-card border border-white/6 inline-flex items-center gap-1.5'>
+              <span className='w-2 h-2 rounded-full bg-text-muted animate-bounce [animation-delay:0ms]' />
+              <span className='w-2 h-2 rounded-full bg-text-muted animate-bounce [animation-delay:150ms]' />
+              <span className='w-2 h-2 rounded-full bg-text-muted animate-bounce [animation-delay:300ms]' />
+            </div>
+          </div>
+        </div>
+      )}
       <div ref={bottomRef} />
       {lightbox && (
         <Lightbox

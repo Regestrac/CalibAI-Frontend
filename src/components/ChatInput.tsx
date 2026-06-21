@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Mic, Paperclip, Send } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { addMessage, setArtifacts, setArtifactOpen, type Message } from '../redux/messageSlice';
+import { addMessage, setArtifacts, setArtifactOpen, type Message, setIsAnswering } from '../redux/messageSlice';
 import { sendMessage } from '../services/sendMessage';
 import { createConversation } from '../services/createConversation';
 import { addConversation, updateConversationTitle } from '../redux/conversationSlice';
@@ -12,6 +12,9 @@ import { agents } from '../helpers/constants';
 const ChatInput = () => {
   const [input, setInput] = useState('');
   const [selectedAgent, setSelectedAgent] = useState('auto');
+
+  const isAnswering = useAppSelector((state) => state.message.isAnswering);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const navigate = useNavigate();
@@ -35,6 +38,7 @@ const ChatInput = () => {
       createdAt: new Date().toISOString(),
     };
     dispatch(addMessage(userMsg));
+    dispatch(setIsAnswering(true));
 
     let convId = conversationId;
     try {
@@ -72,6 +76,7 @@ const ChatInput = () => {
         }
       }
     } finally {
+      dispatch(setIsAnswering(false));
       if (!conversationId && convId) {
         navigate(`/chat/${convId}`);
       }
@@ -108,6 +113,7 @@ const ChatInput = () => {
             return (
               <button
                 key={agent.id}
+                disabled={isAnswering}
                 type='button'
                 onClick={() => setSelectedAgent(agent.id)}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border transition-colors cursor-pointer ${active
@@ -124,7 +130,8 @@ const ChatInput = () => {
         <div className='flex items-center gap-2 pt-2.5'>
           <button
             type='button'
-            className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0'
+            disabled={isAnswering}
+            className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0 disabled:opacity-40 disabled:cursor-not-allowed'
           >
             <Paperclip size={18} />
           </button>
@@ -139,13 +146,14 @@ const ChatInput = () => {
           />
           <button
             type='button'
+            disabled={isAnswering}
             className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0'
           >
             <Mic size={18} />
           </button>
           <button
             onClick={handleSend}
-            disabled={!input.trim()}
+            disabled={!input.trim() || isAnswering}
             className='p-2 rounded-lg bg-primary text-white hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0'
           >
             <Send size={16} />

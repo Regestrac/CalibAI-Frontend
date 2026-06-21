@@ -26,6 +26,7 @@ type InitialStateType = {
   artifacts: ArtifactType[],
   isArtifactOpen: boolean,
   isArtifactExpanded: boolean,
+  isAnswering: boolean,
 };
 
 const initialState: InitialStateType = {
@@ -34,6 +35,7 @@ const initialState: InitialStateType = {
   artifacts: [],
   isArtifactOpen: false,
   isArtifactExpanded: false,
+  isAnswering: false,
 };
 
 const messageSlice = createSlice({
@@ -64,6 +66,9 @@ const messageSlice = createSlice({
     setArtifactExpanded: (state, action: PayloadAction<boolean>) => {
       state.isArtifactExpanded = action.payload;
     },
+    setIsAnswering: (state, action: PayloadAction<boolean>) => {
+      state.isAnswering = action.payload;
+    },
   },
 });
 
@@ -75,5 +80,6 @@ export const {
   setArtifacts,
   setArtifactOpen,
   setArtifactExpanded,
+  setIsAnswering,
 } = messageSlice.actions;
 export default messageSlice.reducer;
