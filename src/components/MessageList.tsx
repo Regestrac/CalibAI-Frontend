@@ -95,6 +95,18 @@ const MessageList = () => {
                       <ExternalLink size={14} />
                     </a>
                   ),
+                  img: ({ src }) => (
+                    <button
+                      onClick={() => setLightbox({ images: [src], index: 0 })}
+                      className='p-0 border-0 cursor-pointer'
+                    >
+                      <img
+                        src={src}
+                        alt={`result ${1}`}
+                        className='w-full h-50 object-cover rounded-lg border border-white/10'
+                      />
+                    </button>
+                  ),
                 }}
               >
                 {msg.content}
