@@ -8,6 +8,6 @@ export const createConversation = async () => {
   } catch (error) {
     console.log(`Create conversation error: ${error}`);
 
-    return [];
+    return null;
   }
 };

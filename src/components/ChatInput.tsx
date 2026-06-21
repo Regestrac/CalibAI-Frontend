@@ -37,20 +37,24 @@ const ChatInput = () => {
     dispatch(addMessage(userMsg));
 
     let convId = conversationId;
-    let title = convTitle;
-    if (!convId) {
-      const conv = await createConversation();
-      dispatch(addConversation(conv));
-      convId = conv?._id;
-      title = conv?.title;
-    }
+    try {
+      let title = convTitle;
 
-    if (title === "New Chat") {
-      dispatch(updateConversationTitle({ convId, title: text?.trim() }));
-      await updateConversation(convId, text?.trim());
-    }
+      if (!convId) {
+        const conv = await createConversation();
+        if (!conv?._id) {
+          return;
+        }
+        dispatch(addConversation(conv));
+        convId = conv._id;
+        title = conv.title;
+      }
 
-    if (convId) {
+      if (title === "New Chat") {
+        dispatch(updateConversationTitle({ convId, title: text?.trim() }));
+        await updateConversation(convId, text?.trim());
+      }
+
       const data = await sendMessage(convId, text, selectedAgent);
 
       if (data?.data) {
@@ -66,10 +70,10 @@ const ChatInput = () => {
         if (data?.artifacts?.length) {
           dispatch(setArtifactOpen(true));
         }
-
-        if (!conversationId && convId) {
-          navigate(`/chat/${convId}`);
-        }
+      }
+    } finally {
+      if (!conversationId && convId) {
+        navigate(`/chat/${convId}`);
       }
     }
   };
