@@ -1,6 +1,31 @@
 import { useEffect, useState } from 'react';
-import { Crown, X } from 'lucide-react';
+import { Check, Crown, Zap, X } from 'lucide-react';
 import { useAppSelector } from '../hooks/redux-hooks';
+
+type PlanConfig = {
+  id: "starter" | "pro" | "free";
+  name: string;
+  price: number;
+  credits: number;
+  features: string[];
+};
+
+const plans: PlanConfig[] = [
+  {
+    id: 'starter',
+    name: 'Starter',
+    price: 199,
+    credits: 500,
+    features: ['500 credits/month', 'Priority support', 'Standard models'],
+  },
+  {
+    id: 'pro',
+    name: 'Pro',
+    price: 399,
+    credits: 1000,
+    features: ['1000 credits/month', 'Priority support', 'Advanced models', 'Early access to features'],
+  },
+];
 
 type PlansDrawerPropsType = {
   isOpen: boolean;
@@ -12,6 +37,9 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const userData = useAppSelector((state) => state.user.userData);
+
+  const handleUpgrade = async (planId: "starter" | "pro" | "free") => {
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -30,10 +58,17 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
-    if (isOpen) document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
+    if (isOpen) {
+      document.addEventListener('keydown', handleEsc);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    };
   }, [isOpen, onClose]);
 
   if (!shouldRender) return null;
@@ -85,6 +120,51 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
               </div>
             </div>
           </div>
+
+          <h3 className='text-sm font-medium text-text-secondary uppercase tracking-wider'>Available Plans</h3>
+
+          {plans.map((plan) => {
+            const isCurrent = userData?.plan?.toLowerCase() === plan.id;
+            return (
+              <div
+                key={plan.id}
+                className={`rounded-2xl border p-5 transition-colors ${isCurrent
+                  ? 'bg-primary/10 border-primary/30'
+                  : 'bg-bg-card border-white/6'
+                  }`}
+              >
+                <div className='flex items-center justify-between'>
+                  <div className='flex items-center gap-2'>
+                    <Zap size={18} className={isCurrent ? 'text-primary-light' : 'text-accent'} />
+                    <h4 className='text-base font-semibold text-white'>{plan.name}</h4>
+                  </div>
+                  <div className='text-right'>
+                    <span className='text-lg font-bold text-white'>₹{plan.price}</span>
+                    <span className='text-xs text-text-muted'>/month</span>
+                  </div>
+                </div>
+                <p className='mt-1 text-sm text-text-secondary'>{plan.credits} credits</p>
+                <ul className='mt-3 space-y-1.5'>
+                  {plan.features.map((feature) => (
+                    <li key={feature} className='flex items-center gap-2 text-sm text-text-secondary'>
+                      <Check size={14} className='shrink-0 text-accent' />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  disabled={isCurrent}
+                  onClick={() => handleUpgrade(plan.id)}
+                  className={`mt-4 w-full py-2 rounded-lg text-sm font-medium transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${isCurrent
+                    ? 'bg-white/5 text-text-secondary'
+                    : 'bg-linear-to-br from-primary to-primary-dark text-white hover:opacity-90'
+                    }`}
+                >
+                  {isCurrent ? 'Current Plan' : 'Upgrade'}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
