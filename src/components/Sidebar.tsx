@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { setConversations } from '../redux/conversationSlice';
 import { logout } from '../services/logout';
 import { setUserData } from '../redux/userSlice';
+import PlansDrawer from './PlansDrawer';
 
 type SidebarProps = {
   mobileOpen: boolean;
@@ -15,6 +16,7 @@ type SidebarProps = {
 const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPlans, setShowPlans] = useState(false);
 
   const conversations = useAppSelector((state) => state.conversation.conversations);
   const userData = useAppSelector((state) => state.user.userData);
@@ -46,7 +48,9 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
     navigate("/");
   };
 
-  const handleCreditsClick = () => { };
+  const handleCreditsClick = () => {
+    setShowPlans(true);
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -161,6 +165,7 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
           )}
         </div>
       </div>
+      <PlansDrawer isOpen={showPlans} onClose={() => setShowPlans(false)} />
     </>
   );
 };
