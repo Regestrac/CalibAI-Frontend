@@ -5,6 +5,10 @@ type UserDataType = {
   userId: string;
   email: string;
   avatarUrl: string;
+  plan: string;
+  credits: number;
+  totalCredits: number;
+  planExpiresAt: string;
 };
 
 type InitialStateType = {

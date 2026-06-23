@@ -21,6 +21,10 @@ const SignupPage = () => {
           email: data?.user?.email,
           name: data?.user?.name,
           userId: data?.user?._id,
+          credits: data?.user?.credits,
+          plan: data?.user?.plan,
+          totalCredits: data?.user?.totalCredits,
+          planExpiresAt: data?.user?.planExpiresAt,
         },
       })
     );
