@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Check, Crown, Zap, X } from 'lucide-react';
 import { useAppSelector } from '../hooks/redux-hooks';
+import { createOrder } from '../services/createOrder';
+import { verifyPayment } from '../services/verifyPayment';
 
 type PlanConfig = {
   id: "starter" | "pro" | "free";
@@ -39,6 +41,37 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
   const userData = useAppSelector((state) => state.user.userData);
 
   const handleUpgrade = async (planId: "starter" | "pro" | "free") => {
+    try {
+      const data = await createOrder({ plan: planId });
+      console.log('data: ', data);
+      if (!data) {
+        return;
+      }
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: data?.order?.amount,
+        currency: data?.order?.currency,
+        name: "CalibAI",
+        description: `${data?.plan?.name} Plan Subscription`,
+        order_id: data?.order?.id,
+        handler: async (response) => {
+          console.log('response: ', response);
+          try {
+            const verifyData = await verifyPayment(response);
+            console.log('verifyData: ', verifyData);
+          } catch (error) {
+            console.log("Verify error: ", error);
+          }
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
