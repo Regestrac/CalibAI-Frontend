@@ -8,10 +8,12 @@ import { createConversation } from '../services/createConversation';
 import { addConversation, updateConversationTitle } from '../redux/conversationSlice';
 import { updateConversation } from '../services/updateConversation';
 import { agents } from '../helpers/constants';
+import FileUpload from './FileUpload';
 
 const ChatInput = () => {
   const [input, setInput] = useState('');
   const [selectedAgent, setSelectedAgent] = useState('auto');
+  const [file, setFile] = useState<File | null>(null);
 
   const isAnswering = useAppSelector((state) => state.message.isAnswering);
 
@@ -30,7 +32,7 @@ const ChatInput = () => {
   const currConv = useAppSelector((state) => state.conversation.conversations.find((conv) => conv._id === conversationId));
   const convTitle = currConv?.title;
 
-  const onSend = async (text: string) => {
+  const onSend = async (text: string, attachment: File | null) => {
     const userMsg: Message = {
       _id: Date.now().toString(),
       role: 'user',
@@ -59,7 +61,7 @@ const ChatInput = () => {
         await updateConversation(convId, text?.trim());
       }
 
-      const data = await sendMessage(convId, text, selectedAgent);
+      const data = await sendMessage(convId, text, selectedAgent, attachment);
 
       if (data?.data) {
         const agentMsg: Message = {
@@ -77,6 +79,7 @@ const ChatInput = () => {
       }
     } finally {
       dispatch(setIsAnswering(false));
+      setFile(null);
       if (!conversationId && convId) {
         navigate(`/chat/${convId}`);
       }
@@ -85,8 +88,9 @@ const ChatInput = () => {
 
   const handleSend = () => {
     const trimmed = input.trim();
-    if (!trimmed) return;
-    onSend(trimmed);
+    if (!trimmed && !file) return;
+    const text = trimmed || (file ? `Attached: ${file.name}` : '');
+    onSend(text, file);
     setInput('');
   };
 
@@ -127,20 +131,25 @@ const ChatInput = () => {
             );
           })}
         </div>
+        {file && (
+          <div className='pt-2'>
+            <FileUpload file={file} onFileSelect={setFile}>
+              <Paperclip size={18} />
+            </FileUpload>
+          </div>
+        )}
         <div className='flex items-center gap-2 pt-2.5'>
-          <button
-            type='button'
-            disabled={isAnswering}
-            className='p-2 rounded-lg text-text-muted hover:text-white hover:bg-white/5 transition-colors cursor-pointer shrink-0 disabled:opacity-40 disabled:cursor-not-allowed'
-          >
-            <Paperclip size={18} />
-          </button>
+          {!file && (
+            <FileUpload file={file} onFileSelect={setFile} disabled={isAnswering}>
+              <Paperclip size={18} />
+            </FileUpload>
+          )}
           <textarea
             ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder='Ask anything'
+            placeholder={file ? 'Add a message or send the file' : 'Ask anything'}
             rows={1}
             className='flex-1 bg-transparent text-sm text-white placeholder-text-muted outline-none resize-none max-h-40'
           />
@@ -153,7 +162,7 @@ const ChatInput = () => {
           </button>
           <button
             onClick={handleSend}
-            disabled={!input.trim() || isAnswering}
+            disabled={(!input.trim() && !file) || isAnswering}
             className='p-2 rounded-lg bg-primary text-white hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0'
           >
             <Send size={16} />
