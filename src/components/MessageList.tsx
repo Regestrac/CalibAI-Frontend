@@ -5,6 +5,7 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Lightbox from './Lightbox';
 import CodeBlock from './CodeBlock';
+import LoadingAnimation from './LoadingAnimation';
 
 const formatTime = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -140,17 +141,7 @@ const MessageList = () => {
           )} */}
         </div>
       ))}
-      {isAnswering && (
-        <div className='flex gap-3'>
-          <div className='max-w-[75%]'>
-            <div className='rounded-2xl rounded-bl-md px-4 py-3 bg-bg-card border border-white/6 inline-flex items-center gap-1.5'>
-              <span className='w-2 h-2 rounded-full bg-text-muted animate-bounce [animation-delay:0ms]' />
-              <span className='w-2 h-2 rounded-full bg-text-muted animate-bounce [animation-delay:150ms]' />
-              <span className='w-2 h-2 rounded-full bg-text-muted animate-bounce [animation-delay:300ms]' />
-            </div>
-          </div>
-        </div>
-      )}
+      <LoadingAnimation />
       <div ref={bottomRef} />
       {lightbox && (
         <Lightbox
