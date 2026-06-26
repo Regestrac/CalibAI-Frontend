@@ -42,6 +42,9 @@ const ChatInput = () => {
     dispatch(addMessage(userMsg));
     dispatch(setIsAnswering(true));
 
+    setFile(null);
+    setInput('');
+
     let convId = conversationId;
     try {
       let title = convTitle;
@@ -79,7 +82,6 @@ const ChatInput = () => {
       }
     } finally {
       dispatch(setIsAnswering(false));
-      setFile(null);
       if (!conversationId && convId) {
         navigate(`/chat/${convId}`);
       }
@@ -91,7 +93,6 @@ const ChatInput = () => {
     if (!trimmed && !file) return;
     const text = trimmed || (file ? `Attached: ${file.name}` : '');
     onSend(text, file);
-    setInput('');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
