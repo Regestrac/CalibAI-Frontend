@@ -1,5 +1,6 @@
 import { useRef, type ReactNode } from 'react';
 import { X, FileText } from 'lucide-react';
+import { showErrorToast } from '../utils/toast';
 
 type FileUploadProps = {
   file: File | null;
@@ -9,7 +10,7 @@ type FileUploadProps = {
 };
 
 const ACCEPTED_TYPES = 'application/pdf,image/*';
-const MAX_SIZE_MB = 20;
+const MAX_SIZE_MB = 10;
 
 const FileUpload = ({ file, onFileSelect, disabled, children }: FileUploadProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,7 +24,7 @@ const FileUpload = ({ file, onFileSelect, disabled, children }: FileUploadProps)
     if (!selected) return;
 
     if (selected.size > MAX_SIZE_MB * 1024 * 1024) {
-      alert(`File must be under ${MAX_SIZE_MB}MB.`);
+      showErrorToast(`File must be under ${MAX_SIZE_MB}MB.`);
       return;
     }
 
