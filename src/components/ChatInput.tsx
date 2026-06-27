@@ -7,6 +7,7 @@ import { sendMessage } from '../services/sendMessage';
 import { createConversation } from '../services/createConversation';
 import { addConversation, updateConversationTitle } from '../redux/conversationSlice';
 import { updateConversation } from '../services/updateConversation';
+import { setUserData } from '../redux/userSlice';
 import { agents } from '../helpers/constants';
 import FileUpload from './FileUpload';
 
@@ -16,6 +17,7 @@ const ChatInput = () => {
   const [file, setFile] = useState<File | null>(null);
 
   const isAnswering = useAppSelector((state) => state.message.isAnswering);
+  const userData = useAppSelector((state) => state.user.userData);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -78,6 +80,15 @@ const ChatInput = () => {
         dispatch(setArtifacts(data?.artifacts || []));
         if (data?.artifacts?.length) {
           dispatch(setArtifactOpen(true));
+        }
+
+        if (data?.remainingCredits !== undefined && userData) {
+          dispatch(setUserData({
+            userData: {
+              ...userData,
+              credits: data.remainingCredits,
+            },
+          }));
         }
       }
     } finally {
