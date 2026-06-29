@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Coins, LoaderCircle, LogOut, MessageSquare, PanelLeftClose, PanelLeftOpen, SquarePen, X } from 'lucide-react';
+import { Coins, LoaderCircle, LogOut, MessageSquare, PanelLeftClose, PanelLeftOpen, SquarePen, Trash2, X } from 'lucide-react';
 import { getConversations } from '../services/getConversations';
+import { deleteConversation } from '../services/deleteConversation';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { setConversations } from '../redux/conversationSlice';
+import { removeConversation, setConversations } from '../redux/conversationSlice';
 import { logout } from '../services/logout';
 import { setUserData } from '../redux/userSlice';
 import PlansDrawer from './PlansDrawer';
+import ConfirmDialog from './ConfirmDialog';
 
 type SidebarProps = {
   mobileOpen: boolean;
@@ -17,6 +19,8 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPlans, setShowPlans] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const conversations = useAppSelector((state) => state.conversation.conversations);
   const userData = useAppSelector((state) => state.user.userData);
@@ -46,6 +50,24 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
 
   const handleNewChatClick = async () => {
     navigate("/");
+  };
+
+  const handleDeleteConversation = async () => {
+    if (!deleteTarget) return;
+    setDeletingId(deleteTarget);
+    await deleteConversation(deleteTarget);
+    dispatch(removeConversation(deleteTarget));
+    if (pathname === `/chat/${deleteTarget}`) {
+      navigate("/");
+    }
+    setDeletingId(null);
+    setDeleteTarget(null);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    if (!deletingId) {
+      setDeleteTarget(null);
+    }
   };
 
   const handleCreditsClick = () => {
@@ -120,13 +142,28 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
                 key={chat._id}
                 to={`/chat/${chat._id}`}
                 onClick={() => { onCloseMobile(); }}
-                className={`flex items-center gap-3 px-4 py-2.5 transition-colors border-l-2 ${pathname === `/chat/${chat._id}`
+                className={`group flex items-center gap-3 px-4 py-2.5 transition-colors border-l-2 ${pathname === `/chat/${chat._id}`
                   ? 'bg-primary/10 text-white border-l-primary'
                   : 'text-text-secondary border-l-transparent hover:bg-bg-elevated hover:text-white'
                   }`}
               >
                 <MessageSquare size={16} className={`shrink-0 ${pathname === `/chat/${chat._id}` ? 'text-primary-light' : ''}`} />
-                {!isCollapsed && <span className='text-sm truncate'>{chat.title || 'New Chat'}</span>}
+                {!isCollapsed && <span className='flex-1 text-sm truncate'>{chat.title || 'New Chat'}</span>}
+                {!isCollapsed && (
+                  <button
+                    type='button'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setDeleteTarget(chat._id);
+                    }}
+                    disabled={deletingId === chat._id}
+                    title='Delete conversation'
+                    className='opacity-0 group-hover:opacity-100 text-text-muted hover:text-red-400 transition-opacity cursor-pointer shrink-0 disabled:opacity-40'
+                  >
+                    {deletingId === chat._id ? <LoaderCircle size={14} className='animate-spin' /> : <Trash2 size={14} />}
+                  </button>
+                )}
               </Link>
             ))
           )}
@@ -166,6 +203,15 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
         </div>
       </div>
       <PlansDrawer isOpen={showPlans} onClose={() => setShowPlans(false)} />
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title='Delete conversation'
+        message='This conversation and its messages will be permanently deleted. This action cannot be undone.'
+        confirmLabel='Delete'
+        loading={!!deletingId}
+        onConfirm={handleDeleteConversation}
+        onClose={handleCloseDeleteDialog}
+      />
     </>
   );
 };

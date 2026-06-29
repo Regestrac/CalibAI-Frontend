@@ -36,9 +36,12 @@ const conversationSlice = createSlice({
           ? { ...conversation, title: action.payload.title }
           : conversation
       );
+    },
+    removeConversation: (state, action: PayloadAction<string>) => {
+      state.conversations = state.conversations.filter((conversation) => conversation._id !== action.payload);
     }
   },
 });
 
-export const { setConversations, addConversation, updateConversationTitle } = conversationSlice.actions;
+export const { setConversations, addConversation, updateConversationTitle, removeConversation } = conversationSlice.actions;
 export default conversationSlice.reducer;
