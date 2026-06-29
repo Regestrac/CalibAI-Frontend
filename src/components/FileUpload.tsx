@@ -5,14 +5,29 @@ import { showErrorToast } from '../utils/toast';
 type FileUploadProps = {
   file: File | null;
   onFileSelect: (file: File | null) => void;
-  disabled?: boolean;
   children: ReactNode;
+  disabled?: boolean;
+  acceptedTypes?: string;
+  /**
+   * @param maxSize
+   * @type number | undefined; 
+   * @default 10485760 (10 MB)
+   * @description - maximum accepted size of file in bytes.
+   */
+  maxSize?: number;
 };
 
 const ACCEPTED_TYPES = 'application/pdf,image/*';
-const MAX_SIZE_MB = 10;
+const MAX_SIZE = 10 * 1024 * 1024;
 
-const FileUpload = ({ file, onFileSelect, disabled, children }: FileUploadProps) => {
+const formatSize = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+};
+
+const FileUpload = ({ file, onFileSelect, disabled, children, acceptedTypes = ACCEPTED_TYPES, maxSize = MAX_SIZE }: FileUploadProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
@@ -23,8 +38,8 @@ const FileUpload = ({ file, onFileSelect, disabled, children }: FileUploadProps)
     const selected = e.target.files?.[0];
     if (!selected) return;
 
-    if (selected.size > MAX_SIZE_MB * 1024 * 1024) {
-      showErrorToast(`File must be under ${MAX_SIZE_MB}MB.`);
+    if (selected.size > maxSize) {
+      showErrorToast(`File must be under ${formatSize(maxSize)}.`);
       return;
     }
 
@@ -69,7 +84,7 @@ const FileUpload = ({ file, onFileSelect, disabled, children }: FileUploadProps)
       <input
         ref={inputRef}
         type='file'
-        accept={ACCEPTED_TYPES}
+        accept={acceptedTypes}
         onChange={handleChange}
         className='hidden'
       />
