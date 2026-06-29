@@ -27,6 +27,7 @@ type InitialStateType = {
   isArtifactOpen: boolean,
   isArtifactExpanded: boolean,
   isAnswering: boolean,
+  loadedConversationId: string | null,
 };
 
 const initialState: InitialStateType = {
@@ -36,6 +37,7 @@ const initialState: InitialStateType = {
   isArtifactOpen: false,
   isArtifactExpanded: false,
   isAnswering: false,
+  loadedConversationId: null,
 };
 
 const messageSlice = createSlice({
@@ -69,6 +71,9 @@ const messageSlice = createSlice({
     setIsAnswering: (state, action: PayloadAction<boolean>) => {
       state.isAnswering = action.payload;
     },
+    setLoadedConversationId: (state, action: PayloadAction<string | null>) => {
+      state.loadedConversationId = action.payload;
+    },
   },
 });
 
@@ -81,5 +86,6 @@ export const {
   setArtifactOpen,
   setArtifactExpanded,
   setIsAnswering,
+  setLoadedConversationId,
 } = messageSlice.actions;
 export default messageSlice.reducer;

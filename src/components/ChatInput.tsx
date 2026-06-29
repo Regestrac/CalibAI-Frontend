@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Paperclip, Send } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
-import { addMessage, setArtifacts, setArtifactOpen, type Message, setIsAnswering } from '../redux/messageSlice';
+import { addMessage, setArtifacts, setArtifactOpen, type Message, setIsAnswering, setLoadedConversationId } from '../redux/messageSlice';
 import { sendMessage } from '../services/sendMessage';
 import { createConversation } from '../services/createConversation';
 import { addConversation, updateConversationTitle } from '../redux/conversationSlice';
@@ -20,7 +20,6 @@ const ChatInput = () => {
   const isAnswering = useAppSelector((state) => state.message.isAnswering);
   const userData = useAppSelector((state) => state.user.userData);
   const reduxId = useAppSelector((state) => state.conversation.activeConversationId);
-  const currConv = useAppSelector((state) => state.conversation.conversations.find((conv) => conv._id === conversationId));
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -31,6 +30,9 @@ const ChatInput = () => {
   const urlId = pathname.includes('/chat/') ? pathname.split('/')?.at(-1) : '';
 
   const conversationId = reduxId ?? urlId ?? null;
+
+  const currConv = useAppSelector((state) => state.conversation.conversations.find((conv) => conv._id === conversationId));
+
   const convTitle = currConv?.title;
 
   const onSend = async (text: string, attachment: File | null) => {
@@ -58,6 +60,8 @@ const ChatInput = () => {
         dispatch(addConversation(conv));
         convId = conv._id;
         title = conv.title;
+        dispatch(setLoadedConversationId(convId));
+        navigate(`/chat/${convId}`, { replace: true });
       }
 
       if (title === "New Chat") {
@@ -92,9 +96,6 @@ const ChatInput = () => {
       }
     } finally {
       dispatch(setIsAnswering(false));
-      if (!conversationId && convId) {
-        navigate(`/chat/${convId}`);
-      }
     }
   };
 

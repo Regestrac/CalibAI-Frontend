@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Nav from './Nav';
@@ -7,11 +7,12 @@ import ChatInput from './ChatInput';
 import { getMessages } from '../services/getMessages';
 import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { useMediaQuery } from '../hooks/useMediaQuery';
-import { setMessages, setLoading, clearMessages, setArtifacts } from '../redux/messageSlice';
+import { setMessages, setLoading, clearMessages, setArtifacts, setLoadedConversationId } from '../redux/messageSlice';
 
 const ChatArea = () => {
   const isArtifactOpen = useAppSelector((state) => state.message.isArtifactOpen);
   const isArtifactExpanded = useAppSelector((state) => state.message.isArtifactExpanded);
+  const loadedConversationId = useAppSelector((state) => state.message.loadedConversationId);
 
   const { pathname } = useLocation();
   const id = pathname.includes('/chat/') ? pathname.split('/')?.at(-1) : '';
@@ -20,23 +21,34 @@ const ChatArea = () => {
 
   const dispatch = useAppDispatch();
 
+  const loadedConversationIdRef = useRef(loadedConversationId);
+
+  useEffect(() => {
+    loadedConversationIdRef.current = loadedConversationId;
+  }, [loadedConversationId]);
+
   const chatWidth = !isDesktop || !isArtifactOpen ? '100%' : isArtifactExpanded ? '40%' : '60%';
 
   useEffect(() => {
-    const fetchMessages = async () => {
+    const fetchMessages = async (chatId: string) => {
       dispatch(setLoading(true));
-      const data = await getMessages(id);
+      const data = await getMessages(chatId);
       dispatch(setMessages(data.messages || data));
       const latestArtifactMessage = [...data].reverse().find((item) => item?.artifacts && item?.artifacts?.length);
       dispatch(setArtifacts(latestArtifactMessage?.artifacts || []));
+      dispatch(setLoadedConversationId(chatId));
       dispatch(setLoading(false));
     };
 
     if (id) {
-      fetchMessages();
+      if (loadedConversationIdRef.current === id) {
+        return;
+      }
+      fetchMessages(id);
     } else {
       dispatch(clearMessages());
-    };
+      dispatch(setLoadedConversationId(null));
+    }
   }, [dispatch, id]);
 
   return (
