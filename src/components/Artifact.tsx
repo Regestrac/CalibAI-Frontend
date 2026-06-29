@@ -10,23 +10,23 @@ import { getLanguage } from '../utils/getLanguage';
 import { copyToClipboard } from '../utils/copyToClipboard';
 
 const Artifact = () => {
-  const isArtifactOpen = useAppSelector((state) => state.message.isArtifactOpen);
-  const isArtifactExpanded = useAppSelector((state) => state.message.isArtifactExpanded);
-  const artifacts = useAppSelector((state) => state.message.artifacts);
-
-  const dispatch = useAppDispatch();
-
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
-
   const [activeId, setActiveId] = useState<number | null>(null);
   const [fileIndex, setFileIndex] = useState(0);
   const [mode, setMode] = useState<'code' | 'preview'>('code');
   const [copied, setCopied] = useState(false);
 
+  const isArtifactOpen = useAppSelector((state) => state.message.isArtifactOpen);
+  const isArtifactExpanded = useAppSelector((state) => state.message.isArtifactExpanded);
+  const artifacts = useAppSelector((state) => state.message.artifacts);
+
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+
   const active = artifacts.find((a) => a.id === activeId) ?? artifacts[0] ?? null;
   const safeIndex = active?.files?.length ? Math.min(fileIndex, active.files.length - 1) : 0;
   const file = active?.files?.[safeIndex] ?? null;
   const canPreview = file ? getLanguage(file.name) === 'html' : false;
+
+  const dispatch = useAppDispatch();
 
   const handleCopy = async () => {
     if (!file) return;
