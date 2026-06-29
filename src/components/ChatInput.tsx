@@ -19,20 +19,18 @@ const ChatInput = () => {
 
   const isAnswering = useAppSelector((state) => state.message.isAnswering);
   const userData = useAppSelector((state) => state.user.userData);
+  const reduxId = useAppSelector((state) => state.conversation.activeConversationId);
+  const currConv = useAppSelector((state) => state.conversation.conversations.find((conv) => conv._id === conversationId));
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const navigate = useNavigate();
-
   const dispatch = useAppDispatch();
 
   const { pathname } = useLocation();
   const urlId = pathname.includes('/chat/') ? pathname.split('/')?.at(-1) : '';
 
-  const reduxId = useAppSelector((s) => s.conversation.activeConversationId);
   const conversationId = reduxId ?? urlId ?? null;
-
-  const currConv = useAppSelector((state) => state.conversation.conversations.find((conv) => conv._id === conversationId));
   const convTitle = currConv?.title;
 
   const onSend = async (text: string, attachment: File | null) => {

@@ -10,11 +10,12 @@ import { useMediaQuery } from '../hooks/useMediaQuery';
 import { setMessages, setLoading, clearMessages, setArtifacts } from '../redux/messageSlice';
 
 const ChatArea = () => {
+  const isArtifactOpen = useAppSelector((state) => state.message.isArtifactOpen);
+  const isArtifactExpanded = useAppSelector((state) => state.message.isArtifactExpanded);
+
   const { pathname } = useLocation();
   const id = pathname.includes('/chat/') ? pathname.split('/')?.at(-1) : '';
 
-  const isArtifactOpen = useAppSelector((state) => state.message.isArtifactOpen);
-  const isArtifactExpanded = useAppSelector((state) => state.message.isArtifactExpanded);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   const dispatch = useAppDispatch();
