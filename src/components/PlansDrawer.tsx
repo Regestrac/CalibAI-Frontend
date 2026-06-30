@@ -54,7 +54,7 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
         name: "CalibAI",
         description: `${data?.plan?.name} Plan Subscription`,
         order_id: data?.order?.id,
-        handler: async (response) => {
+        handler: async (response: RazorpayResponse) => {
           console.log('response: ', response);
           try {
             const verifyData = await verifyPayment(response);

@@ -98,11 +98,15 @@ const MessageList = () => {
                   ),
                   img: ({ src }) => (
                     <button
-                      onClick={() => setLightbox({ images: [src], index: 0 })}
+                      onClick={() => {
+                        if (src) {
+                          setLightbox({ images: [src], index: 0 });
+                        }
+                      }}
                       className='p-0 border-0 cursor-pointer'
                     >
                       <img
-                        src={src}
+                        src={src ?? ''}
                         alt={`result ${1}`}
                         className='w-full h-50 object-cover rounded-lg border border-white/10'
                       />

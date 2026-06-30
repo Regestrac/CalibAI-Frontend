@@ -64,6 +64,10 @@ const ChatInput = () => {
         navigate(`/chat/${convId}`, { replace: true });
       }
 
+      if (!convId) {
+        return;
+      }
+
       if (title === "New Chat") {
         dispatch(updateConversationTitle({ convId, title: text?.trim() }));
         await updateConversation(convId, text?.trim());

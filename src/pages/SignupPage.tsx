@@ -41,19 +41,25 @@ const SignupPage = () => {
     } catch (err) {
       console.error("Login error:", err);
 
-      if (err.code === "auth/popup-closed-by-user") {
+      const error = err as {
+        code?: string;
+        response?: { data?: { message?: string }; status?: number };
+        message?: string;
+      };
+
+      if (error.code === "auth/popup-closed-by-user") {
         setError("Sign-in popup was closed. Please try again.");
-      } else if (err.code === "auth/popup-blocked") {
+      } else if (error.code === "auth/popup-blocked") {
         setError("Popup was blocked by your browser. Please allow popups and try again.");
-      } else if (err.code === "auth/cancelled-popup-request") {
+      } else if (error.code === "auth/cancelled-popup-request") {
         setError("Sign-in was cancelled. Please try again.");
-      } else if (err?.response?.data?.message) {
-        setError(err.response.data.message);
-      } else if (err?.response?.status === 401) {
+      } else if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else if (error.response?.status === 401) {
         setError("Authentication failed. Please try signing in again.");
-      } else if (err?.response?.status >= 500) {
+      } else if ((error.response?.status ?? 0) >= 500) {
         setError("Server error. Please try again later.");
-      } else if (err.message?.includes("network") || err.message?.includes("Network")) {
+      } else if (error.message?.includes("network") || error.message?.includes("Network")) {
         setError("Network error. Please check your connection and try again.");
       } else {
         setError("Login failed. Please try again.");
