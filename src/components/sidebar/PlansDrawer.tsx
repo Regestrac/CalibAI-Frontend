@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Check, Crown, Zap, X } from 'lucide-react';
-import { useAppSelector } from '../hooks/redux-hooks';
-import { createOrder } from '../services/createOrder';
-import { verifyPayment } from '../services/verifyPayment';
-import { showErrorToast } from '../utils/toast';
+import { useAppSelector } from '../../hooks/redux-hooks';
+import { createOrder } from '../../services/createOrder';
+import { verifyPayment } from '../../services/verifyPayment';
+import { showErrorToast } from '../../utils/toast';
 
 type PlanConfig = {
   id: "starter" | "pro" | "free";
