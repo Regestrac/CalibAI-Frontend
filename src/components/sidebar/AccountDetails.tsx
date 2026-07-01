@@ -1,10 +1,15 @@
 import type { Dispatch, SetStateAction } from 'react';
+import { useState } from 'react';
 import { logout } from '../../services/logout';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux-hooks';
 import { setUserData } from '../../redux/userSlice';
 import { Coins, LogOut } from 'lucide-react';
+import ConfirmDialog from '../ConfirmDialog';
 
 const AccountDetails = ({ isCollapsed, setShowPlans }: { isCollapsed: boolean; setShowPlans: Dispatch<SetStateAction<boolean>> }) => {
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
   const userData = useAppSelector((state) => state.user.userData);
 
   const dispatch = useAppDispatch();
@@ -14,9 +19,19 @@ const AccountDetails = ({ isCollapsed, setShowPlans }: { isCollapsed: boolean; s
   };
 
   const handleLogout = async () => {
+    setLoggingOut(true);
     await logout();
     dispatch(setUserData({ userData: null }));
+    setLoggingOut(false);
+    setShowLogoutConfirm(false);
   };
+
+  const handleCloseLogoutDialog = () => {
+    if (!loggingOut) {
+      setShowLogoutConfirm(false);
+    }
+  };
+
   return (
 
     <div className='flex items-center gap-3 px-3 py-5 min-w-67.5'>
@@ -44,12 +59,21 @@ const AccountDetails = ({ isCollapsed, setShowPlans }: { isCollapsed: boolean; s
             <button onClick={handleCreditsClick} className='p-1.5 rounded-md text-text-secondary hover:text-accent-hover transition-colors cursor-pointer' title='Credits'>
               <Coins size={18} />
             </button>
-            <button onClick={handleLogout} className='p-1.5 rounded-md text-text-secondary hover:text-red-400 transition-colors cursor-pointer' title='Logout'>
+            <button onClick={() => setShowLogoutConfirm(true)} className='p-1.5 rounded-md text-text-secondary hover:text-red-400 transition-colors cursor-pointer' title='Logout'>
               <LogOut size={18} />
             </button>
           </div>
         </>
       )}
+      <ConfirmDialog
+        open={showLogoutConfirm}
+        title='Log out'
+        message='Are you sure you want to log out?'
+        confirmLabel='Log out'
+        loading={loggingOut}
+        onConfirm={handleLogout}
+        onClose={handleCloseLogoutDialog}
+      />
     </div>
   );
 };
