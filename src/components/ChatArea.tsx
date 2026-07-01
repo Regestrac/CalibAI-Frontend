@@ -1,55 +1,17 @@
-import { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Nav from './Nav';
 import MessageList from './MessageList';
 import ChatInput from './ChatInput';
-import { getMessages } from '../services/getMessages';
-import { useAppDispatch, useAppSelector } from '../hooks/redux-hooks';
 import { useMediaQuery } from '../hooks/useMediaQuery';
-import { setMessages, setLoading, clearMessages, setArtifacts, setLoadedConversationId } from '../redux/messageSlice';
+import { useAppSelector } from '../hooks/redux-hooks';
+import FetchMessages from './FetchMessages';
 
 const ChatArea = () => {
   const isArtifactOpen = useAppSelector((state) => state.message.isArtifactOpen);
   const isArtifactExpanded = useAppSelector((state) => state.message.isArtifactExpanded);
-  const loadedConversationId = useAppSelector((state) => state.message.loadedConversationId);
-
-  const { pathname } = useLocation();
-  const id = pathname.includes('/chat/') ? pathname.split('/')?.at(-1) : '';
 
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-
-  const dispatch = useAppDispatch();
-
-  const loadedConversationIdRef = useRef(loadedConversationId);
-
-  useEffect(() => {
-    loadedConversationIdRef.current = loadedConversationId;
-  }, [loadedConversationId]);
-
   const chatWidth = !isDesktop || !isArtifactOpen ? '100%' : isArtifactExpanded ? '40%' : '60%';
-
-  useEffect(() => {
-    const fetchMessages = async (chatId: string) => {
-      dispatch(setLoading(true));
-      const data = await getMessages(chatId);
-      dispatch(setMessages(data.messages || data));
-      const latestArtifactMessage = [...data].reverse().find((item) => item?.artifacts && item?.artifacts?.length);
-      dispatch(setArtifacts(latestArtifactMessage?.artifacts || []));
-      dispatch(setLoadedConversationId(chatId));
-      dispatch(setLoading(false));
-    };
-
-    if (id) {
-      if (loadedConversationIdRef.current === id) {
-        return;
-      }
-      fetchMessages(id);
-    } else {
-      dispatch(clearMessages());
-      dispatch(setLoadedConversationId(null));
-    }
-  }, [dispatch, id]);
 
   return (
     <motion.div
@@ -59,6 +21,7 @@ const ChatArea = () => {
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       style={{ flexShrink: 0 }}
     >
+      <FetchMessages />
       <Nav />
       <MessageList />
       <ChatInput />
