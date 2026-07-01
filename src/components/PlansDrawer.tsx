@@ -3,6 +3,7 @@ import { Check, Crown, Zap, X } from 'lucide-react';
 import { useAppSelector } from '../hooks/redux-hooks';
 import { createOrder } from '../services/createOrder';
 import { verifyPayment } from '../services/verifyPayment';
+import { showErrorToast } from '../utils/toast';
 
 type PlanConfig = {
   id: "starter" | "pro" | "free";
@@ -43,7 +44,6 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
   const handleUpgrade = async (planId: "starter" | "pro" | "free") => {
     try {
       const data = await createOrder({ plan: planId });
-      console.log('data: ', data);
       if (!data) {
         return;
       }
@@ -55,12 +55,10 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
         description: `${data?.plan?.name} Plan Subscription`,
         order_id: data?.order?.id,
         handler: async (response: RazorpayResponse) => {
-          console.log('response: ', response);
           try {
-            const verifyData = await verifyPayment(response);
-            console.log('verifyData: ', verifyData);
+            await verifyPayment(response);
           } catch (error) {
-            console.log("Verify error: ", error);
+            showErrorToast(`Verify payment error: ${error?.message || error}`);
           }
         },
         theme: {
@@ -70,7 +68,7 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (error) {
-      console.log(error);
+      showErrorToast(`Upgrade plan error: ${error?.message || error}`);
     }
   };
 

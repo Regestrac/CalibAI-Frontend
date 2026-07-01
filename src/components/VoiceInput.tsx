@@ -39,24 +39,20 @@ const VoiceInput = ({ setInput }: { setInput: Dispatch<SetStateAction<string>> }
     if (!SpeechRecognition) return;
 
     const recognition = new SpeechRecognition();
-    console.log('recognition: ', recognition);
     recognition.lang = "en-US";
     recognition.continuous = true;
     recognition.interimResults = true;
 
     recognition.onresult = (event) => {
-      console.log('event: ', event);
       let transcript = '';
       for (let index = 0; index <= event?.resultIndex; index++) {
         transcript += event.results[index][0].transcript;
       }
-      console.log('transcript: ', transcript);
       setInput(transcript);
     };
 
     recognition.onerror = (event) => {
       const error = event.error;
-      console.log('error event: ', event);
       console.error('Speech recognition error:', error);
       if (error === 'not-allowed') {
         showErrorToast("Microphone permission denied.");

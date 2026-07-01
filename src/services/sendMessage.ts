@@ -1,4 +1,5 @@
 import api from "../utils/axios";
+import { showErrorToast } from "../utils/toast";
 
 export const sendMessage = async (
   conversationId: string,
@@ -21,7 +22,7 @@ export const sendMessage = async (
 
     return data;
   } catch (error) {
-    console.log(`Send message error: ${error}`);
+    showErrorToast(`Send message error: ${error?.message || error}`);
     return null;
   }
 };

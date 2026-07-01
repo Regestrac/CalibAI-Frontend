@@ -1,4 +1,5 @@
 import api from "../utils/axios";
+import { showErrorToast } from "../utils/toast";
 
 export const deleteConversation = async (conversationId: string) => {
   try {
@@ -6,7 +7,7 @@ export const deleteConversation = async (conversationId: string) => {
 
     return data;
   } catch (error) {
-    console.log(`Delete conversation error: ${error}`);
+    showErrorToast(`Delete conversation error: ${error?.message || error}`);
 
     return null;
   }

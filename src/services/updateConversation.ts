@@ -1,4 +1,5 @@
 import api from "../utils/axios";
+import { showErrorToast } from "../utils/toast";
 
 export const updateConversation = async (id: string, title: string) => {
   try {
@@ -9,7 +10,7 @@ export const updateConversation = async (id: string, title: string) => {
 
     return data;
   } catch (error) {
-    console.log(`Update conversation error: ${error}`);
+    showErrorToast(`Update conversation error: ${error?.message || error}`);
 
     return null;
   }

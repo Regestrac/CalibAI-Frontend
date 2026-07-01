@@ -1,4 +1,5 @@
 import api from "../utils/axios";
+import { showErrorToast } from "../utils/toast";
 
 export const getConversations = async () => {
   try {
@@ -6,7 +7,7 @@ export const getConversations = async () => {
 
     return data;
   } catch (error) {
-    console.log(`Get conversations error: ${error}`);
+    showErrorToast(`Get conversations error: ${error?.message || error}`);
 
     return [];
   }

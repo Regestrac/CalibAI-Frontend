@@ -1,10 +1,11 @@
 import api from "../utils/axios";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
 
 export const logout = async () => {
   try {
     const response = await api.post("/api/auth/logout");
-    console.log(response?.data);
+    showSuccessToast(response?.data?.message || "Logout successfull.");
   } catch (error) {
-    console.error("Logout error:", error);
+    showErrorToast("Logout error: " + error?.message || error);
   }
 };
