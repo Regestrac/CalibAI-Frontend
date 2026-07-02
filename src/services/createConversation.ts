@@ -7,7 +7,7 @@ export const createConversation = async () => {
 
     return data;
   } catch (error) {
-    showErrorToast(`Create conversation error: ${error?.message || error}`);
+    showErrorToast(`Create conversation error: ${error instanceof Error ? error.message : error}`);
 
     return null;
   }

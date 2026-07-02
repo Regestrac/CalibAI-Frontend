@@ -6,7 +6,7 @@ export const createOrder = async (payload: { plan: "free" | "starter" | "pro"; }
     const { data } = await api.post("/api/billing/create", payload);
     return data;
   } catch (error) {
-    showErrorToast("Create order error: " + error?.message || error);
+    showErrorToast(`Create order error: ${error instanceof Error ? error.message : error}`);
     return null;
   }
 };

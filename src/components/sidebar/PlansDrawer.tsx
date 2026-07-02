@@ -58,7 +58,7 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
           try {
             await verifyPayment(response);
           } catch (error) {
-            showErrorToast(`Verify payment error: ${error?.message || error}`);
+            showErrorToast(`Verify payment error: ${error instanceof Error ? error.message : error}`);
           }
         },
         theme: {
@@ -68,7 +68,7 @@ const PlansDrawer = ({ isOpen, onClose }: PlansDrawerPropsType) => {
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (error) {
-      showErrorToast(`Upgrade plan error: ${error?.message || error}`);
+      showErrorToast(`Upgrade plan error: ${error instanceof Error ? error.message : error}`);
     }
   };
 

@@ -7,7 +7,7 @@ export const getConversations = async () => {
 
     return data;
   } catch (error) {
-    showErrorToast(`Get conversations error: ${error?.message || error}`);
+    showErrorToast(`Get conversations error: ${error instanceof Error ? error.message : error}`);
 
     return [];
   }

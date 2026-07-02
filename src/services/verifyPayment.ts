@@ -13,7 +13,7 @@ export const verifyPayment = async (payload: PayloadType) => {
     showSuccessToast(data?.message || 'Payment verified.');
     return data;
   } catch (error) {
-    showErrorToast("Payment verification error: " + error?.message || error);
+    showErrorToast(`Payment verification error: ${error instanceof Error ? error.message : error}`);
     return null;
   }
 };

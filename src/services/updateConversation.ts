@@ -10,7 +10,7 @@ export const updateConversation = async (id: string, title: string) => {
 
     return data;
   } catch (error) {
-    showErrorToast(`Update conversation error: ${error?.message || error}`);
+    showErrorToast(`Update conversation error: ${error instanceof Error ? error.message : error}`);
 
     return null;
   }

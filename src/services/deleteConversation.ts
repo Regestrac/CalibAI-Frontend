@@ -7,7 +7,7 @@ export const deleteConversation = async (conversationId: string) => {
 
     return data;
   } catch (error) {
-    showErrorToast(`Delete conversation error: ${error?.message || error}`);
+    showErrorToast(`Delete conversation error: ${error instanceof Error ? error.message : error}`);
 
     return null;
   }

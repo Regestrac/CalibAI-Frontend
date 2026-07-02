@@ -7,7 +7,7 @@ export const getCurrentUser = async () => {
 
     return data;
   } catch (error) {
-    showErrorToast(`Current user error: ${error?.message || error}`);
+    showErrorToast(`Current user error: ${error instanceof Error ? error.message : error}`);
 
     return null;
   }

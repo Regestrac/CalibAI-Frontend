@@ -22,7 +22,7 @@ export const sendMessage = async (
 
     return data;
   } catch (error) {
-    showErrorToast(`Send message error: ${error?.message || error}`);
+    showErrorToast(`Send message error: ${error instanceof Error ? error.message : error}`);
     return null;
   }
 };
