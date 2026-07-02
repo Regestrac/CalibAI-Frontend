@@ -40,6 +40,7 @@ const Sidebar = ({ mobileOpen, onCloseMobile }: SidebarProps) => {
         <div className='flex items-center justify-between p-4 min-w-67.5'>
           {!isCollapsed && (
             <span className='flex items-center gap-2'>
+              <img src='/ai-brain.png' alt='CalibAI' className='size-5 select-none' draggable={false} />
               <span className='font-semibold text-white tracking-tight'>CalibAI</span>
               <span className='text-[10px] font-medium uppercase tracking-wider text-accent border border-accent/20 rounded px-1.5 py-0.5 leading-none'>
                 Free

@@ -22,6 +22,7 @@ const Home = () => {
             >
               <PanelLeftOpen size={20} />
             </button>
+            <img src='/ai-brain.png' alt='CalibAI' className='size-7 rounded-md select-none' draggable={false} />
             <span className='font-semibold text-white tracking-tight'>CalibAI</span>
             <div className='w-8' />
           </header>
