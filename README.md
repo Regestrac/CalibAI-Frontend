@@ -21,34 +21,12 @@
 
 ## 📹 Demo
 
-<!-- 
-===========================================================================
-PLACEHOLDER — APP WALKTHROUGH VIDEO
-===========================================================================
-Replace the comment block below with one of the following once the 
-screen recording is ready:
-
-Option A — GitHub-hosted video (drag & drop into the repo, e.g. /docs/demo.mp4):
-  <video src="docs/demo.mp4" controls width="100%" muted autoplay loop></video>
-
-Option B — YouTube / Loom embed:
-  [![CalibAI Walkthrough](https://img.shields.io/badge/🎬%20Watch-Workflow%20Walkthrough-red?style=for-the-badge)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
-
-Option C — GIF:
-  ![CalibAI Walkthrough](docs/demo.gif)
-
-Suggested recording script (≈60–90s):
-  1. Google sign-in → chat workspace loads with conversation history
-  2. Send a plain prompt (Chat agent) → streaming-style response
-  3. Switch to the Coding agent → artifact panel opens with Monaco + live preview
-  4. Attach a PDF → RAG-grounded answer
-  5. Open Plans drawer → Razorpay checkout → credits update
-===========================================================================
--->
-
 <div align="center">
-  <!-- 🎬 <b>Demo video coming soon.</b> -->
-  <i>Demo walkthrough coming soon.</i>
+
+https://github.com/user-attachments/assets/bb932bf6-0107-4baf-b5ad-ff70b8a2ba0d
+
+<i>A ~2:20 walkthrough: Google sign-in → chat workspace, agent routing, coding artifact panel with live preview, PDF Q&amp;A, and Razorpay checkout.</i>
+
 </div>
 
 ---
